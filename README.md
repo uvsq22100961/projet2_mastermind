@@ -1,2 +1,2 @@
 # projet2_mastermind
-Projet 2 : Mastermind MOTD02 groupe 4
+Projet 2 : Mastermind MITD02 groupe 4
