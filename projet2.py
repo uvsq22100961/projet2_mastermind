@@ -30,6 +30,8 @@ def quadrillage():
     for ligne in range(11):
         for colonne in range(3):
             canvas.create_line((50, 70 + ligne * HAUTEUR//12), (LARGEUR - 50, 70 + ligne * HAUTEUR//12))
+            canvas.create_line((50 + ligne * HAUTEUR//12,70),(50 + ligne * HAUTEUR//12, HAUTEUR - 50))
+
 
 #
 racine = tk.Tk()
