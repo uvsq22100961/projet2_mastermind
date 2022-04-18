@@ -58,16 +58,25 @@ def quadrillage2() :
         canvas.create_oval((10 + (i*50), 20), (60 + (i*50), 70), fill = a)
 
 
+
 # création des widgets 
 racine = tk.Tk()
 canvas = tk.Canvas(racine, height= HAUTEUR, width= LARGEUR, bg="grey")
+bouton_sauv = tk.Button(racine, text="Sauvegarder partie")
+bouton_load = tk.Button(racine, text="charger partie")
+bouton_triche = tk.Button(racine, text="revenir en arrière")
+bouton_aide = tk.Button(racine, text="aide")
 
 liste = []
 quadrillage()
 quadrillage2()
 
 # placement des widgets 
-canvas.grid()
+canvas.grid(column=0, row=0, columnspan=3, rowspan=4)
+bouton_sauv.grid(column=3, row=2)
+bouton_load.grid(column=3, row=3)
+bouton_triche.grid(column=3, row = 0)
+bouton_aide.grid(column=3, row=1)
 
 # boucle principale 
 canvas.mainloop()
