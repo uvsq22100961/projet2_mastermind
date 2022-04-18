@@ -13,9 +13,14 @@ import random as rd
 
 # variables 
 
+x0 = 70 
+y0 = 100
+x1 = 120 
+y1 =  150
+
 code = []
-LARGEUR = 500
-HAUTEUR = 800
+LARGEUR = 800
+HAUTEUR = 700
 
 # variables globales 
 
@@ -34,17 +39,20 @@ def choix_code1():
         code.append(c)
 
 
-def quadrillage():
-    """fonction qui crée le quadrillage"""
-    for ligne in range(11):
-        for colonne in range(3):
-            canvas.create_line((50, 70 + ligne * HAUTEUR//12), (LARGEUR - 50, 70 + ligne * HAUTEUR//12))
-            canvas.create_line((50 + ligne * HAUTEUR//12,70),(50 + ligne * HAUTEUR//12, HAUTEUR - 50))
+def quadrillage() : 
+    """ fonction qui crée le quadrillage des essais"""
+    global x0, y0
+    global x1, y1 
+    for i in range (10) :  
+        for l in range (4) : 
+            canvas.create_rectangle((x0 + l*50, y0), (x1 + l*50, y1))
+        y0 = y1 
+        y1 = y1 + 50       
 
 
 # création des widgets 
 racine = tk.Tk()
-canvas = tk.Canvas(racine, height= HAUTEUR, width= LARGEUR)
+canvas = tk.Canvas(racine, height= HAUTEUR, width= LARGEUR, bg="grey")
 
 liste = []
 quadrillage()
