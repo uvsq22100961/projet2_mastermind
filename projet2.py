@@ -45,8 +45,8 @@ def quadrillage() :
     global x1, y1 
     for i in range (10) :  
         for l in range (4) : 
-            canvas.create_rectangle((x0 + l*50, y0), (x1 + l*50, y1), fill = "white")
-            canvas.create_oval((x0 + l*50, y0), (x1 + l*50, y1))
+            canvas.create_rectangle((x0 + l*50, y0), (x1 + l*50, y1), fill = "saddlebrown")
+            canvas.create_oval((x0 + l*50, y0), (x1 + l*50, y1), fill = "peru")
         y0 = y1 
         y1 = y1 + 50    
 
@@ -54,7 +54,7 @@ def quadrillage2() :
     """fonction qui crée les ronds où l'utilisateur cliquera pour choisir la couleur de ses pions"""   
     for i in range (8) : 
         a = couleurs_Gpion[i]
-        canvas.create_rectangle((10 + (i*50), 20), (60 + (i*50), 70), fill = "white")
+        canvas.create_rectangle((10 + (i*50), 20), (60 + (i*50), 70), fill = "saddlebrown")
         canvas.create_oval((10 + (i*50), 20), (60 + (i*50), 70), fill = a)
 
 
