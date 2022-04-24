@@ -18,6 +18,12 @@ x0 = 110
 y0 = 100
 x1 = 160 
 y1 =  150
+
+X0 = 110 
+Y0 = 100
+X1 = 160 
+Y1 =  150
+
 # indicateur qui dit à quel essai on est
 Essai = 0
 
@@ -85,7 +91,18 @@ def choisir_couleur(event):
             couleur = "purple"
         couleur_utilisee.configure(fg=couleur)
         print(couleur)
+        GrandsPions()
 
+def GrandsPions():
+    c= 0
+    global X0, Y0
+    global X1, Y1
+    global Essai 
+    if c < 10:  
+        if Essai < 4 : 
+            canvas.create_oval((X0 + Essai*50 , Y0), (X1 + Essai*50, Y1), fill = couleur)
+            c += 1
+            Essai += 1   
 
 # création des widgets 
 racine = tk.Tk()
@@ -97,7 +114,6 @@ bouton_triche = tk.Button(racine, text="revenir en arrière")
 bouton_aide = tk.Button(racine, text="aide")
 # indicateur de la couleur actuelle utilisée :
 couleur_utilisee = tk.Label(racine, text="aucune", font=("helvetica", "15"), fg=couleur, bg="grey")
-
 liste = []
 quadrillage()
 quadrillage2()
@@ -124,3 +140,5 @@ canvas.mainloop()
 
 ## choses à faire:
 # à chaque essai, pouvoir mettre un Grand pion sur le jeu (seulement à la ligne correspondante)
+#---> Faites, mais seulement pour la premiere ligne il faudrait qu'il y ait d'abord une condition (petitspions ect...) 
+# pour commencer le second essaie
