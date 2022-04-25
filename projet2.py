@@ -19,13 +19,14 @@ y0 = 100
 x1 = 160 
 y1 =  150
 
-X0 = 110 
-Y0 = 100
-X1 = 160 
-Y1 =  150
+nombre_max_d_essais = 10
+liste = [[0]*4 for i in range(nombre_max_d_essais)]
+liste2 = 0
 
 # indicateur qui dit à quel essai on est
-Essai = 0
+Essai = 1
+# indicateur qui dit à quel colonne on est
+colonne = 0
 
 code = []
 # dimensions du canvas:
@@ -47,7 +48,7 @@ def choix_code1():
     for i in range(4):
         c = rd.choice(couleurs_Gpion)
         code.append(c)
-
+    print(code)
 
 def quadrillage() : 
     """ fonction qui crée le quadrillage des essais"""
@@ -58,7 +59,8 @@ def quadrillage() :
             canvas.create_rectangle((x0 + l*50, y0), (x1 + l*50, y1), fill = "saddlebrown")
             canvas.create_oval((x0 + l*50, y0), (x1 + l*50, y1), fill = "peru")
         y0 = y1 
-        y1 = y1 + 50    
+        y1 = y1 + 50
+    y0, y1 = 100, 150
 
 def quadrillage2() : 
     """fonction qui crée les ronds où l'utilisateur cliquera pour choisir la couleur de ses pions"""   
@@ -89,20 +91,47 @@ def choisir_couleur(event):
             couleur = "orange"
         elif (x > 360 and x < 410):
             couleur = "purple"
-        couleur_utilisee.configure(fg=couleur)
-        print(couleur)
+        couleur_utilisee.configure(text=couleur, fg=couleur)
         GrandsPions()
 
 def GrandsPions():
-    c= 0
-    global X0, Y0
-    global X1, Y1
-    global Essai 
-    if c < 10:  
-        if Essai < 4 : 
-            canvas.create_oval((X0 + Essai*50 , Y0), (X1 + Essai*50, Y1), fill = couleur)
-            c += 1
-            Essai += 1   
+    """fonction qui pose les grands pions de la couleur choisie sur le jeu"""
+    global colonne
+    global liste
+    global Essai
+    global nombre_max_d_essais
+    if Essai <= nombre_max_d_essais:
+        if colonne < 4 :
+            canvas.create_oval((x0 + colonne*50 , y0), (x1 + colonne*50, y1), fill = couleur)
+            liste[Essai - 1][colonne] = couleur
+            colonne += 1
+    if colonne == 4:
+        PetitsPions()
+
+def PetitsPions():
+    """fonction qui pose automatiquement les petits pions blancs et rouges en fonction de l'essai"""
+    global liste2
+    nombre = 0
+    nombre2 = 0
+    # on utilise une deuxième liste pour les pions blancs :
+    liste2 = list(code)
+    for i in range(4):
+        if liste[Essai - 1][i] == code[i]:
+            canvas.create_oval((320 + nombre*20, y0), (335 + nombre*20, y0 + 15), fill="red")
+            nombre += 1
+            # s'il y a une couleur déjà utilisé on l'enlève de liste2 :
+            liste2[i] = 0
+    for i in range(4):
+        # si la couleur liste[essai-1][i] est dans le code, mais pas à la bonne place, et que cette couleur dans le code
+        # n'est pas déjà utilisée pour les pions rouges (cad qu'elle est dans liste2)... :
+        if liste[Essai - 1][i] in liste2:
+            # ...on met un pion blanc
+            canvas.create_oval((320 + nombre2*20, y0 + 25), (335 + nombre2*20, y0 + 40), fill="white")
+            nombre2 += 1
+            # s'il y a une couleur déjà utilisé on l'enlève de liste2 :
+            for j in range(4):
+                if liste2[j] == liste[Essai - 1][i]:
+                    liste2[j] = 0
 
 # création des widgets 
 racine = tk.Tk()
@@ -114,7 +143,6 @@ bouton_triche = tk.Button(racine, text="revenir en arrière")
 bouton_aide = tk.Button(racine, text="aide")
 # indicateur de la couleur actuelle utilisée :
 couleur_utilisee = tk.Label(racine, text="aucune", font=("helvetica", "15"), fg=couleur, bg="grey")
-liste = []
 quadrillage()
 quadrillage2()
 # Un code est choisi :
@@ -133,12 +161,16 @@ couleur_utilisee.grid(column=3, row=4)
 # boucle principale 
 canvas.mainloop()
 
-# Mettez un " * " si vous avez vu :
 ## nouvelles choses :
-# -fonction choisir_couleur *
-# -Label couleur_utilisee *
+# -fonction choisir_couleur
+# -Label couleur_utilisee
+# -Modification de la fonction GrandsPions
+# -fonction PetitsPions
 
 ## choses à faire:
-# à chaque essai, pouvoir mettre un Grand pion sur le jeu (seulement à la ligne correspondante)
-#---> Faites, mais seulement pour la premiere ligne il faudrait qu'il y ait d'abord une condition (petitspions ect...) 
+# à chaque essai, pouvoir mettre des Grands pions sur le jeu (seulement à la ligne correspondante)
+# ---> Faites, mais seulement pour la premiere ligne il faudrait qu'il y ait d'abord une condition (petitspions ect...) 
 # pour commencer le second essaie
+
+# REMARQUE : les essais sont les lignes et pas le nombre de grands pions que l'on peut mettre par ligne, 
+# il y a 10 essais de bases
