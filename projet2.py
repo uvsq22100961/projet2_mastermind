@@ -102,36 +102,49 @@ def GrandsPions():
     global nombre_max_d_essais
     if Essai <= nombre_max_d_essais:
         if colonne < 4 :
-            canvas.create_oval((x0 + colonne*50 , y0), (x1 + colonne*50, y1), fill = couleur)
+            canvas.create_oval((x0 + colonne*50 , y0 + 50*(Essai - 1)), (x1 + colonne*50, y1 + 50*(Essai - 1)), fill = couleur)
             liste[Essai - 1][colonne] = couleur
             colonne += 1
     if colonne == 4:
+        if liste[Essai - 1] == code:
+            couleur_utilisee.configure(text="VICTOIRE", fg="green")
+            return
         PetitsPions()
+        # On réinitialise colonne pour les essais suivants :
+        colonne = 0
 
 def PetitsPions():
     """fonction qui pose automatiquement les petits pions blancs et rouges en fonction de l'essai"""
     global liste2
+    global Essai
     nombre = 0
     nombre2 = 0
     # on utilise une deuxième liste pour les pions blancs :
     liste2 = list(code)
     for i in range(4):
         if liste[Essai - 1][i] == code[i]:
-            canvas.create_oval((320 + nombre*20, y0), (335 + nombre*20, y0 + 15), fill="red")
+            canvas.create_oval((320 + nombre*20, y0 + 50*(Essai - 1)), (335 + nombre*20, y0 + 50*(Essai - 1) + 15), fill="red")
             nombre += 1
             # s'il y a une couleur déjà utilisé on l'enlève de liste2 :
             liste2[i] = 0
     for i in range(4):
         # si la couleur liste[essai-1][i] est dans le code, mais pas à la bonne place, et que cette couleur dans le code
         # n'est pas déjà utilisée pour les pions rouges (cad qu'elle est dans liste2)... :
-        if liste[Essai - 1][i] in liste2:
+        if (liste[Essai - 1][i] in liste2) and (liste[Essai - 1][i] != code[i]):
             # ...on met un pion blanc
-            canvas.create_oval((320 + nombre2*20, y0 + 25), (335 + nombre2*20, y0 + 40), fill="white")
+            canvas.create_oval((320 + nombre2*20, y0 + 25 + 50*(Essai - 1)), (335 + nombre2*20, y0 + 40 + 50*(Essai - 1))
+            , fill="white")
             nombre2 += 1
             # s'il y a une couleur déjà utilisé on l'enlève de liste2 :
             for j in range(4):
                 if liste2[j] == liste[Essai - 1][i]:
                     liste2[j] = 0
+    # On ajoute 1 à Essai pour dire qu'on passe à l'eessai suivant
+    if Essai == 10:
+        couleur_utilisee.configure(text="GAME OVER", fg="black")
+    Essai += 1
+    #canvas.bind('<Button-1>', choisir_couleur)
+
 
 # création des widgets 
 racine = tk.Tk()
@@ -166,11 +179,14 @@ canvas.mainloop()
 # -Label couleur_utilisee
 # -Modification de la fonction GrandsPions
 # -fonction PetitsPions
+# -Modification des fonction, ce qui permet de jouer normalement
 
 ## choses à faire:
-# à chaque essai, pouvoir mettre des Grands pions sur le jeu (seulement à la ligne correspondante)
-# ---> Faites, mais seulement pour la premiere ligne il faudrait qu'il y ait d'abord une condition (petitspions ect...) 
-# pour commencer le second essaie
+# -mode 2 joueurs
+# -faire fontionner les boutons
+# (pour sauvegarder : créer une copie de la liste contenant toutes les couleurs)
 
 # REMARQUE : les essais sont les lignes et pas le nombre de grands pions que l'on peut mettre par ligne, 
 # il y a 10 essais de bases
+
+## choses pour améliorer :
