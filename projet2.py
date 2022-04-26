@@ -52,6 +52,7 @@ def commencerpartie():
     bouton_load.config(text ="Arreter la partie")
     bouton_mode1.config(text="Mode 1 joueur", command= mode1joueur)
     bouton_mode2.config(text="Mode 2 joueurs", command= mode2joueurs)
+    canvas.bind('<Button-1>', choisir_couleur) # clic sur une couleur
 
 
 def mode1joueur():
@@ -75,7 +76,7 @@ def choix_code1():
     for i in range(4):
         c = rd.choice(couleurs_Gpion)
         code.append(c)
-    print(code)
+    print(code)# Un code est choisi
 
 def quadrillage() : 
     """ fonction qui crée le quadrillage des essais"""
@@ -227,10 +228,9 @@ quadrillage()
 quadrillage2()
 quadrillage3()
 
-# Un code est choisi :
-choix_code1()
-# clic sur une couleur :
-canvas.bind('<Button-1>', choisir_couleur)
+
+
+
 
 # placement des widgets 
 canvas.grid(column=0, row=0, columnspan=3, rowspan=5)
@@ -255,7 +255,6 @@ canvas.mainloop()
 
 ## choses à faire:
 # -Corriger le mode 2 joeurs:
-#   - desactiver les actions avant de cliquer sur le bouton commencer et le mode de jeu (possible?)
 #   - Cacher le code secret dans le mode 2 joueurs
 #   - Pouvoir utiliser le bouton arreter et inialiser une nouvelle partie
 #-faire fontionner les boutons Arreter, sauvegarder ,aide et revenir en arriere
