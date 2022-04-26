@@ -27,7 +27,11 @@ liste2 = 0
 Essai = 1
 # indicateur qui dit à quel colonne on est
 colonne = 0
-
+#Compteur qui compte le nb de pions dans le code secret
+codesecret= 0
+#indicateur du mode de jeu 
+modesolo = 0
+#list qui va contenir le code secret
 code = []
 # dimensions du canvas:
 LARGEUR = 800
@@ -40,6 +44,29 @@ couleur = "black"
 
 ###########
 # fonctions
+
+
+def commencerpartie():
+    """fonction qui commence la partie"""
+    label1.config(text="Veuillez choisir un mode de jeux")
+    bouton_load.config(text ="Arreter la partie")
+    bouton_mode1.config(text="Mode 1 joueur", command= mode1joueur)
+    bouton_mode2.config(text="Mode 2 joueurs", command= mode2joueurs)
+
+
+def mode1joueur():
+    """fonction qui demarre le mode 1 joueur"""
+    global modesolo
+    modesolo = 1 # 1 lorsque c'est True
+    label1.config(text="Veuillez choisir une combinaison de pions ")
+    choix_code1() 
+
+def mode2joueurs():
+    """fonction qui demarre le mode 2 joueurs"""
+    global modesolo
+    modesolo = 0
+    label1.config(text="Veuillez choisir une combinaison de pions secret a l'abris des regards")
+    
 
 def choix_code1():
     """fonction qui permet à l'ordinateur de choisir le code en mode 1 joueur """
@@ -69,6 +96,14 @@ def quadrillage2() :
         canvas.create_rectangle((10 + (i*50), 20), (60 + (i*50), 70), fill = "saddlebrown")
         canvas.create_oval((10 + (i*50), 20), (60 + (i*50), 70), fill = a)
 
+
+def quadrillage3() : 
+    """fonction qui crée le quadrillage où seront placés les pions secrets"""   
+    for i in range (4) : 
+        canvas.create_rectangle((500 + (i*50), 20), (550 + (i*50), 70), fill = "saddlebrown")
+        canvas.create_oval((500 + (i*50), 20), (550 + (i*50), 70), fill = "peru")
+
+
 def choisir_couleur(event):
     """fonction qui permet de cliquer sur une couleur qui est ensuite enregistrée"""
     global couleur
@@ -92,6 +127,27 @@ def choisir_couleur(event):
         elif (x > 360 and x < 410):
             couleur = "purple"
         couleur_utilisee.configure(text=couleur, fg=couleur)
+        mode()
+
+def mode():
+    """fonctions qui nous permet de placer les pions selon le mode de jeux"""
+    if modesolo == 1:
+        GrandsPions()
+    if modesolo == 0:
+        grandspionscode()
+
+def grandspionscode():
+    """fonction qui place les pions secret dans le mode de jeu 2 joueurs """
+    global code
+    global codesecret
+    
+    if codesecret < 4:
+        canvas.create_oval((500 + (codesecret*50), 20), (550 + (codesecret*50), 70), fill = couleur)
+        code.append(couleur)
+        print(code)
+        codesecret += 1
+    else:
+        modesolo = 1
         GrandsPions()
 
 def GrandsPions():
@@ -146,18 +202,31 @@ def PetitsPions():
     #canvas.bind('<Button-1>', choisir_couleur)
 
 
+
+
+
 # création des widgets 
 racine = tk.Tk()
 canvas = tk.Canvas(racine, height= HAUTEUR, width= LARGEUR, bg="grey")
 Titre = racine.title("Mastermind")
 bouton_sauv = tk.Button(racine, text="Sauvegarder partie")
-bouton_load = tk.Button(racine, text="charger partie")
+bouton_load = tk.Button(racine, text="Commencer une nouvelle partie", command= commencerpartie)
 bouton_triche = tk.Button(racine, text="revenir en arrière")
 bouton_aide = tk.Button(racine, text="aide")
+bouton_mode1 = tk.Button(racine)
+bouton_mode2 = tk.Button(racine)
+
+#Surface de textes
+label1 = tk.Label(racine, text="Regles du jeu : .....", font=("helvetica", "10"), bg="grey")
+
 # indicateur de la couleur actuelle utilisée :
 couleur_utilisee = tk.Label(racine, text="aucune", font=("helvetica", "15"), fg=couleur, bg="grey")
+
+
 quadrillage()
 quadrillage2()
+quadrillage3()
+
 # Un code est choisi :
 choix_code1()
 # clic sur une couleur :
@@ -169,8 +238,10 @@ bouton_sauv.grid(column=3, row=2)
 bouton_load.grid(column=3, row=3)
 bouton_triche.grid(column=3, row = 0)
 bouton_aide.grid(column=3, row=1)
-couleur_utilisee.grid(column=3, row=4)
-
+couleur_utilisee.grid(column=5, row=4)
+bouton_mode1.grid(column=4, row=4)
+bouton_mode2.grid(column=3, row=4)
+label1.grid(column=2, row=3)
 # boucle principale 
 canvas.mainloop()
 
@@ -180,13 +251,18 @@ canvas.mainloop()
 # -Modification de la fonction GrandsPions
 # -fonction PetitsPions
 # -Modification des fonction, ce qui permet de jouer normalement
+# - Mode 2 joueurs et les boutons partiellement
 
 ## choses à faire:
-# -mode 2 joueurs
-# -faire fontionner les boutons
+# -Corriger le mode 2 joeurs:
+#   - desactiver les actions avant de cliquer sur le bouton commencer et le mode de jeu (possible?)
+#   - Cacher le code secret dans le mode 2 joueurs
+#   - Pouvoir utiliser le bouton arreter et inialiser une nouvelle partie
+#-faire fontionner les boutons Arreter, sauvegarder ,aide et revenir en arriere
 # (pour sauvegarder : créer une copie de la liste contenant toutes les couleurs)
 
 # REMARQUE : les essais sont les lignes et pas le nombre de grands pions que l'on peut mettre par ligne, 
 # il y a 10 essais de bases
+
 
 ## choses pour améliorer :
