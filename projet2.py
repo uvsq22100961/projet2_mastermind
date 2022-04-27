@@ -23,27 +23,27 @@ nombre_max_d_essais = 10
 liste = [[0]*4 for i in range(nombre_max_d_essais)]
 liste2 = 0
 
-# indicateur qui dit à quel essai on est
+# Indicateur qui indique à quel essai on est:
 Essai = 1
-# indicateur qui dit à quel colonne on est
+# Indicateur qui indique à quel colonne on est:
 colonne = 0
-#Compteur qui compte le nb de pions dans le code secret
+# Iompteur qui indique le nombre de pions dans le code secret:
 codesecret= 0
-#indicateur du mode de jeu 
+# Indicateur du mode de jeu (mode 1 joueur ou mode 2 joueurs):
 modesolo = 0
-#list qui va contenir le code secret
+# Liste qui va contenir le code secret:
 code = []
-# dimensions du canvas:
+# Dimensions du canvas:
 LARGEUR = 800
 HAUTEUR = 700
 
-# variables globales 
+# Variables globales :
 couleurs_Gpion = ["green", "red", "yellow", "blue", "white", "pink", "orange", "purple"]
 couleur_Ppion = ["yellow", "red"]
 couleur = "black"
 
 ###########
-# fonctions
+# Fonctions:
 
 
 def commencerpartie():
@@ -58,14 +58,14 @@ def commencerpartie():
 def mode1joueur():
     """fonction qui demarre le mode 1 joueur"""
     global modesolo
-    modesolo = 1 # 1 lorsque c'est True
+    modesolo = 1 # lorsque c'est le mode 1 joueur est vraie
     label1.config(text="Veuillez choisir une combinaison de pions ")
-    choix_code1() 
+    choix_code1() # on appelle la fonction qui choisit un code au hasard
 
 def mode2joueurs():
     """fonction qui demarre le mode 2 joueurs"""
     global modesolo
-    modesolo = 0
+    modesolo = 0 # le mode 1 joueur n'est pas vraie
     label1.config(text="Veuillez choisir une combinaison de pions secret a l'abris des regards")
     
 
@@ -132,12 +132,12 @@ def choisir_couleur(event):
 
 def mode():
     """fonctions qui nous permet de placer les pions selon le mode de jeux"""
-    if modesolo == 1:
+    if modesolo == 1: 
         GrandsPions()
     if modesolo == 0:
-        grandspionscode()
+        GrandsPions2()
 
-def grandspionscode():
+def GrandsPions2():
     """fonction qui place les pions secret dans le mode de jeu 2 joueurs """
     global code
     global codesecret
@@ -206,7 +206,7 @@ def PetitsPions():
 
 
 
-# création des widgets 
+# Création des widgets :
 racine = tk.Tk()
 canvas = tk.Canvas(racine, height= HAUTEUR, width= LARGEUR, bg="grey")
 Titre = racine.title("Mastermind")
@@ -217,10 +217,10 @@ bouton_aide = tk.Button(racine, text="aide")
 bouton_mode1 = tk.Button(racine)
 bouton_mode2 = tk.Button(racine)
 
-#Surface de textes
+# Surface de textes :
 label1 = tk.Label(racine, text="Regles du jeu : .....", font=("helvetica", "10"), bg="grey")
 
-# indicateur de la couleur actuelle utilisée :
+# Indicateur de la couleur actuelle utilisée :
 couleur_utilisee = tk.Label(racine, text="aucune", font=("helvetica", "15"), fg=couleur, bg="grey")
 
 
@@ -232,7 +232,7 @@ quadrillage3()
 
 
 
-# placement des widgets 
+# Placement des widgets :
 canvas.grid(column=0, row=0, columnspan=3, rowspan=5)
 bouton_sauv.grid(column=3, row=2)
 bouton_load.grid(column=3, row=3)
@@ -242,7 +242,8 @@ couleur_utilisee.grid(column=5, row=4)
 bouton_mode1.grid(column=4, row=4)
 bouton_mode2.grid(column=3, row=4)
 label1.grid(column=2, row=3)
-# boucle principale 
+
+# Boucle principale :
 canvas.mainloop()
 
 ## nouvelles choses :
