@@ -11,6 +11,7 @@
 
 import tkinter as tk
 import random as rd
+import copy
 
 # variables 
 
@@ -20,14 +21,17 @@ x1 = 160
 y1 =  150
 
 nombre_max_d_essais = 10
+# liste avec les couleurs des pions :
 liste = [[0]*4 for i in range(nombre_max_d_essais)]
 liste2 = 0
+liste_sauvegarde = []
+liste_ppions = [[0] for i in range(nombre_max_d_essais)]
 
 # Indicateur qui indique à quel essai on est:
 Essai = 1
 # Indicateur qui indique à quel colonne on est:
 colonne = 0
-# Iompteur qui indique le nombre de pions dans le code secret:
+# Compteur qui indique le nombre de pions dans le code secret:
 codesecret= 0
 # Indicateur du mode de jeu (mode 1 joueur ou mode 2 joueurs):
 modesolo = 0
@@ -36,6 +40,8 @@ code = []
 # Dimensions du canvas:
 LARGEUR = 800
 HAUTEUR = 700
+# indicateur qui indique si on est en train de relancer une partie quand on est dans la fonction commencerpartie
+relancer = False
 
 # Variables globales :
 couleurs_Gpion = ["green", "red", "yellow", "blue", "white", "pink", "orange", "purple"]
@@ -48,32 +54,51 @@ couleur = "black"
 
 def commencerpartie():
     """fonction qui commence la partie"""
+    global liste
+    global nombre_max_d_essais
+    global relancer
+    if relancer == True:
+        for i in range(nombre_max_d_essais):
+            for j in range(4):
+                if liste[i][j] != 0:
+                    objet = canvas.find_closest(135 + (j*50), 125 + (i*50))
+                    canvas.delete(objet[0])
+        liste = [[0]*4 for i in range(nombre_max_d_essais)]
+        for i in range(nombre_max_d_essais):
+            for j in range(liste_ppions[i][0]):
+                objet = canvas.find_closest(375, 132 + (i*50))
+                canvas.delete(objet[0])
+    # Text d'explication
     label1.config(text="Veuillez choisir un mode de jeux")
     bouton_load.config(text ="Arreter la partie")
+    # Boutons des deux modes :
     bouton_mode1.config(text="Mode 1 joueur", command= mode1joueur)
     bouton_mode2.config(text="Mode 2 joueurs", command= mode2joueurs)
-    canvas.bind('<Button-1>', choisir_couleur) # clic sur une couleur
 
 
 def mode1joueur():
     """fonction qui demarre le mode 1 joueur"""
     global modesolo
-    modesolo = 1 # lorsque c'est le mode 1 joueur est vraie
-    label1.config(text="Veuillez choisir une combinaison de pions ")
+    modesolo = 1 # lorsque le mode 1 joueur est vraie
+    label1.config(text="Veuillez choisir une combinaison de pions")
     choix_code1() # on appelle la fonction qui choisit un code au hasard
+    # clic sur une couleur :
+    canvas.bind('<Button-1>', choisir_couleur)
 
 def mode2joueurs():
     """fonction qui demarre le mode 2 joueurs"""
     global modesolo
     modesolo = 0 # le mode 1 joueur n'est pas vraie
     label1.config(text="Veuillez choisir une combinaison de pions secret a l'abris des regards")
+    # clic sur une couleur :
+    canvas.bind('<Button-1>', choisir_couleur)
     
 
 def choix_code1():
     """fonction qui permet à l'ordinateur de choisir le code en mode 1 joueur """
     global couleur_Gpion
     global code
-    for i in range(4):
+    for i in range(4): #on ajoute 4 couleurs à la liste 'code'
         c = rd.choice(couleurs_Gpion)
         code.append(c)
     print(code)# Un code est choisi
@@ -99,7 +124,7 @@ def quadrillage2() :
 
 
 def quadrillage3() : 
-    """fonction qui crée le quadrillage où seront placés les pions secrets"""   
+    """fonction qui crée le quadrillage où seront placés les pions secrets en mode 2 joueurs"""   
     for i in range (4) : 
         canvas.create_rectangle((500 + (i*50), 20), (550 + (i*50), 70), fill = "saddlebrown")
         canvas.create_oval((500 + (i*50), 20), (550 + (i*50), 70), fill = "peru")
@@ -132,6 +157,7 @@ def choisir_couleur(event):
 
 def mode():
     """fonctions qui nous permet de placer les pions selon le mode de jeux"""
+    # En fonction du mode, les pions sont posés dans le code secret ou sur le jeu :
     if modesolo == 1: 
         GrandsPions()
     if modesolo == 0:
@@ -147,16 +173,26 @@ def GrandsPions2():
         code.append(couleur)
         print(code)
         codesecret += 1
-    else:
+        if codesecret == 4:
+            label1.config(text="Qliquez sur une couleur pour cacher le code")
+    elif codesecret == 4:
+        codesecret += 1
+        for i in range(4): # Pour chaque cercle, on prend leur identifiant, et modifie leur couleur :
+                objet = canvas.find_closest(525 + (i*50), 45)
+                canvas.itemconfigure(objet, fill="black")
+        label1.config(text="Veuillez choisir une combinaison de pions")
+    else: # Quand on a fini de composé le code, les grands pions sont posés sur le jeu
         modesolo = 1
         GrandsPions()
 
 def GrandsPions():
     """fonction qui pose les grands pions de la couleur choisie sur le jeu"""
     global colonne
-    global liste
     global Essai
     global nombre_max_d_essais
+    global relancer
+    if relancer == False:
+        relancer = True
     if Essai <= nombre_max_d_essais:
         if colonne < 4 :
             canvas.create_oval((x0 + colonne*50 , y0 + 50*(Essai - 1)), (x1 + colonne*50, y1 + 50*(Essai - 1)), fill = couleur)
@@ -173,6 +209,7 @@ def GrandsPions():
 def PetitsPions():
     """fonction qui pose automatiquement les petits pions blancs et rouges en fonction de l'essai"""
     global liste2
+    global liste_ppions
     global Essai
     nombre = 0
     nombre2 = 0
@@ -184,6 +221,8 @@ def PetitsPions():
             nombre += 1
             # s'il y a une couleur déjà utilisé on l'enlève de liste2 :
             liste2[i] = 0
+            # on ajoute 1 à la liste ppion quand on ajoute des petits pions :
+            liste_ppions[Essai - 1][0] += 1
     for i in range(4):
         # si la couleur liste[essai-1][i] est dans le code, mais pas à la bonne place, et que cette couleur dans le code
         # n'est pas déjà utilisée pour les pions rouges (cad qu'elle est dans liste2)... :
@@ -192,6 +231,7 @@ def PetitsPions():
             canvas.create_oval((320 + nombre2*20, y0 + 25 + 50*(Essai - 1)), (335 + nombre2*20, y0 + 40 + 50*(Essai - 1))
             , fill="white")
             nombre2 += 1
+            liste_ppions[Essai - 1][0] += 1
             # s'il y a une couleur déjà utilisé on l'enlève de liste2 :
             for j in range(4):
                 if liste2[j] == liste[Essai - 1][i]:
@@ -202,7 +242,11 @@ def PetitsPions():
     Essai += 1
     #canvas.bind('<Button-1>', choisir_couleur)
 
-
+def sauvegarde():
+    """fonction qui sauvegarde la partie"""
+    global liste_sauvegarde
+    liste_sauvegarde = copy.deepcopy(liste) # permet de copier 'en profondeur' la liste
+    print(liste_ppions)
 
 
 
@@ -210,7 +254,7 @@ def PetitsPions():
 racine = tk.Tk()
 canvas = tk.Canvas(racine, height= HAUTEUR, width= LARGEUR, bg="grey")
 Titre = racine.title("Mastermind")
-bouton_sauv = tk.Button(racine, text="Sauvegarder partie")
+bouton_sauv = tk.Button(racine, text="Sauvegarder partie", command=sauvegarde)
 bouton_load = tk.Button(racine, text="Commencer une nouvelle partie", command= commencerpartie)
 bouton_triche = tk.Button(racine, text="revenir en arrière")
 bouton_aide = tk.Button(racine, text="aide")
@@ -253,16 +297,19 @@ canvas.mainloop()
 # -fonction PetitsPions
 # -Modification des fonction, ce qui permet de jouer normalement
 # - Mode 2 joueurs et les boutons partiellement
+# -on ne peut plus mettre des couleurs sur le jeu tant que le mode n'est pas choisi (T)
+# -Cacher le code secret dans le mode 2 joueurs (T)
+# -début bouton arreter (T)
 
 ## choses à faire:
 # -Corriger le mode 2 joeurs:
-#   - Cacher le code secret dans le mode 2 joueurs
-#   - Pouvoir utiliser le bouton arreter et inialiser une nouvelle partie
+#   - régler probleme avec bouton arreter
 #-faire fontionner les boutons Arreter, sauvegarder ,aide et revenir en arriere
 # (pour sauvegarder : créer une copie de la liste contenant toutes les couleurs)
 
-# REMARQUE : les essais sont les lignes et pas le nombre de grands pions que l'on peut mettre par ligne, 
+# REMARQUES :
+#   -les essais sont les lignes et pas le nombre de grands pions que l'on peut mettre par ligne, 
 # il y a 10 essais de bases
 
 
-## choses pour améliorer :
+## choses pour améliorer à la fin:
