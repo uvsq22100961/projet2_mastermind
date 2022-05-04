@@ -1,8 +1,10 @@
 # Projet n°2 : MASTERMIND - MITD02 groupe 4 
-URL du projet : https://github.com/uvsq22100961/projet2_mastermind 
-Thibault ROYERE
-Camille ROESLER
-Manira MAHAMAT HAGGAR
+- URL du projet : https://github.com/uvsq22100961/projet2_mastermind 
+
+membres du groupe : 
+- Thibault ROYERE
+- Camille ROESLER
+- Manira MAHAMAT HAGGAR
 
 ## pésentation globale du projet 
 
