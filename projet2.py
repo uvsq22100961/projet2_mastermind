@@ -1,18 +1,20 @@
-####################################
+####################################################################
 # URL du projet : https://github.com/uvsq22100961/projet2_mastermind
 # Projet Mastermind MITD2 groupe 4 
 # Thibault ROYERE
 # Camille ROESLER
 # Manira MAHAMAT HAGGAR
-####################################
 
 
+##########################
 # import des bibliothèques 
 
 import tkinter as tk
 import random as rd
 import copy
 
+
+#########################
 # variables 
 
 x0 = 110 
@@ -29,26 +31,34 @@ liste_ppions = [[0] for i in range(nombre_max_d_essais)]
 
 # Indicateur qui indique à quel essai on est:
 Essai = 1
+
 # Indicateur qui indique à quel colonne on est:
 colonne = 0
+
 # Compteur qui indique le nombre de pions dans le code secret:
 codesecret= 0
+
 # Indicateur du mode de jeu (mode 1 joueur ou mode 2 joueurs):
 modesolo = 0
+
 # Liste qui va contenir le code secret:
 code = []
+
 # Dimensions du canvas:
 LARGEUR = 800
 HAUTEUR = 700
+
 # indicateur qui indique si on est en train de relancer une partie quand on est dans la fonction commencerpartie
 relancer = False
 
 # Variables globales :
+
 couleurs_Gpion = ["green", "red", "yellow", "blue", "white", "pink", "orange", "purple"]
 couleur_Ppion = ["yellow", "red"]
 couleur = "black"
 
-###########
+
+######################
 # Fonctions:
 
 
@@ -101,7 +111,7 @@ def choix_code1():
     for i in range(4): #on ajoute 4 couleurs à la liste 'code'
         c = rd.choice(couleurs_Gpion)
         code.append(c)
-    print(code)# Un code est choisi
+    print(code) # Un code est choisi
 
 def quadrillage() : 
     """ fonction qui crée le quadrillage des essais"""
@@ -155,6 +165,7 @@ def choisir_couleur(event):
         couleur_utilisee.configure(text=couleur, fg=couleur)
         mode()
 
+
 def mode():
     """fonctions qui nous permet de placer les pions selon le mode de jeux"""
     # En fonction du mode, les pions sont posés dans le code secret ou sur le jeu :
@@ -163,11 +174,11 @@ def mode():
     if modesolo == 0:
         GrandsPions2()
 
+
 def GrandsPions2():
     """fonction qui place les pions secret dans le mode de jeu 2 joueurs """
     global code
     global codesecret
-    
     if codesecret < 4:
         canvas.create_oval((500 + (codesecret*50), 20), (550 + (codesecret*50), 70), fill = couleur)
         code.append(couleur)
@@ -184,6 +195,7 @@ def GrandsPions2():
     else: # Quand on a fini de composé le code, les grands pions sont posés sur le jeu
         modesolo = 1
         GrandsPions()
+
 
 def GrandsPions():
     """fonction qui pose les grands pions de la couleur choisie sur le jeu"""
@@ -205,6 +217,7 @@ def GrandsPions():
         PetitsPions()
         # On réinitialise colonne pour les essais suivants :
         colonne = 0
+
 
 def PetitsPions():
     """fonction qui pose automatiquement les petits pions blancs et rouges en fonction de l'essai"""
@@ -241,6 +254,7 @@ def PetitsPions():
         couleur_utilisee.configure(text="GAME OVER", fg="black")
     Essai += 1
     #canvas.bind('<Button-1>', choisir_couleur)
+
 
 def sauvegarde():
     """fonction qui sauvegarde la partie"""
@@ -290,6 +304,8 @@ label1.grid(column=2, row=3)
 # Boucle principale :
 canvas.mainloop()
 
+
+
 ## nouvelles choses :
 # -fonction choisir_couleur
 # -Label couleur_utilisee
@@ -300,10 +316,11 @@ canvas.mainloop()
 # -on ne peut plus mettre des couleurs sur le jeu tant que le mode n'est pas choisi (T)
 # -Cacher le code secret dans le mode 2 joueurs (T)
 # -début bouton arreter (T)
+# début du fichier readme (je le fait dans la journée)
 
 ## choses à faire:
 # -Corriger le mode 2 joeurs:
-#   - régler probleme avec bouton arreter
+#   - régler probleme avec bouton arreter (en soit il fonctionne, mais il faut cliquer 1 seule fois dessus) C
 #-faire fontionner les boutons Arreter, sauvegarder ,aide et revenir en arriere
 # (pour sauvegarder : créer une copie de la liste contenant toutes les couleurs)
 
