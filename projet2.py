@@ -40,8 +40,15 @@ code = []
 # Dimensions du canvas:
 LARGEUR = 800
 HAUTEUR = 700
-# indicateur qui indique si on est en train de relancer une partie quand on est dans la fonction commencerpartie
+# indicateur qui indique si on est en train de relancer une partie quand on est dans la fonction commencerpartie (permet
+# d'enlever tous les pions du jeu, et de tout réinitialiser)
 relancer = False
+# bouton pour arrêter la partie en cours
+bouton_arrêt = 0
+# indicateur qui indique si le jeu est arrêté (empêche de poser des pions)
+arrêt = False
+# bouton pour relancer une partie
+bouton_relancer = 0
 
 # Variables globales :
 couleurs_Gpion = ["green", "red", "yellow", "blue", "white", "pink", "orange", "purple"]
@@ -57,20 +64,46 @@ def commencerpartie():
     global liste
     global nombre_max_d_essais
     global relancer
+    global bouton_arrêt
+    global arrêt
+    global codesecret
+    global code
+    global modesolo
+    global Essai
+    global colonne
+    global liste_ppions
     if relancer == True:
+        bouton_relancer.destroy()
+        # On enlève tous les Grands pions :
         for i in range(nombre_max_d_essais):
             for j in range(4):
                 if liste[i][j] != 0:
                     objet = canvas.find_closest(135 + (j*50), 125 + (i*50))
                     canvas.delete(objet[0])
+        # On réinitialise la liste :
         liste = [[0]*4 for i in range(nombre_max_d_essais)]
+        # On enlève tous les Petits pions :
         for i in range(nombre_max_d_essais):
             for j in range(liste_ppions[i][0]):
                 objet = canvas.find_closest(375, 132 + (i*50))
                 canvas.delete(objet[0])
+        codesecret = 0 # on réinitialise le compteur pour recréer un code en mode 2 joueurs
+        if modesolo == 0:
+            for i in range(4): # Pour chaque cercle du code, on prend son identifiant, et on le supprime :
+                    objet = canvas.find_closest(525 + (i*50), 45)
+                    canvas.delete(objet[0])
+        # On réinitialise le code :
+        code = []
+        # On réinitialise les indicateurs d'essais et de la colonne :
+        Essai, colonne = 1, 0
+        # On réinitialise liste_ppions :
+        liste_ppions = [[0] for i in range(nombre_max_d_essais)]
     # Text d'explication
     label1.config(text="Veuillez choisir un mode de jeux")
-    bouton_load.config(text ="Arreter la partie")
+    #bouton_load.config(text ="Arreter la partie")
+    bouton_load.destroy()
+    bouton_arrêt = tk.Button(racine, text="Arreter la partie", command=arreter_partie)
+    bouton_arrêt.grid(column=3, row=3)
     # Boutons des deux modes :
     bouton_mode1.config(text="Mode 1 joueur", command= mode1joueur)
     bouton_mode2.config(text="Mode 2 joueurs", command= mode2joueurs)
@@ -79,7 +112,13 @@ def commencerpartie():
 def mode1joueur():
     """fonction qui demarre le mode 1 joueur"""
     global modesolo
+    global relancer
+    global arrêt
+    if arrêt == True:
+        arrêt = False
     modesolo = 1 # lorsque le mode 1 joueur est vraie
+    if relancer == False:
+        relancer = True
     label1.config(text="Veuillez choisir une combinaison de pions")
     choix_code1() # on appelle la fonction qui choisit un code au hasard
     # clic sur une couleur :
@@ -88,7 +127,13 @@ def mode1joueur():
 def mode2joueurs():
     """fonction qui demarre le mode 2 joueurs"""
     global modesolo
+    global relancer
+    global arrêt
+    if arrêt == True:
+        arrêt = False
     modesolo = 0 # le mode 1 joueur n'est pas vraie
+    if relancer == False:
+        relancer = True
     label1.config(text="Veuillez choisir une combinaison de pions secret a l'abris des regards")
     # clic sur une couleur :
     canvas.bind('<Button-1>', choisir_couleur)
@@ -153,7 +198,8 @@ def choisir_couleur(event):
         elif (x > 360 and x < 410):
             couleur = "purple"
         couleur_utilisee.configure(text=couleur, fg=couleur)
-        mode()
+        if arrêt == False:
+            mode()
 
 def mode():
     """fonctions qui nous permet de placer les pions selon le mode de jeux"""
@@ -190,9 +236,6 @@ def GrandsPions():
     global colonne
     global Essai
     global nombre_max_d_essais
-    global relancer
-    if relancer == False:
-        relancer = True
     if Essai <= nombre_max_d_essais:
         if colonne < 4 :
             canvas.create_oval((x0 + colonne*50 , y0 + 50*(Essai - 1)), (x1 + colonne*50, y1 + 50*(Essai - 1)), fill = couleur)
@@ -248,6 +291,16 @@ def sauvegarde():
     liste_sauvegarde = copy.deepcopy(liste) # permet de copier 'en profondeur' la liste
     print(liste_ppions)
 
+def arreter_partie():
+    global bouton_relancer
+    global arrêt
+    arrêt = True
+    bouton_arrêt.destroy()
+    print(relancer)
+    bouton_relancer = tk.Button(racine, text="relancer une partie", command=commencerpartie)
+    bouton_relancer.grid(column=3, row=3)
+
+
 
 
 # Création des widgets :
@@ -300,15 +353,16 @@ canvas.mainloop()
 # -on ne peut plus mettre des couleurs sur le jeu tant que le mode n'est pas choisi (T)
 # -Cacher le code secret dans le mode 2 joueurs (T)
 # -début bouton arreter (T)
+# -fin bouton arreter (T)
+# -fin bouton recommencer (T)
 
 ## choses à faire:
-# -Corriger le mode 2 joeurs:
-#   - régler probleme avec bouton arreter
-#-faire fontionner les boutons Arreter, sauvegarder ,aide et revenir en arriere
+# -régler probleme avec bouton recommencer (mauvaises supressions des petits pions)
+#-faire fontionner les boutons sauvegarder ,aide et revenir en arriere
 # (pour sauvegarder : créer une copie de la liste contenant toutes les couleurs)
 
 # REMARQUES :
-#   -les essais sont les lignes et pas le nombre de grands pions que l'on peut mettre par ligne, 
+# -les essais sont les lignes et pas le nombre de grands pions que l'on peut mettre par ligne, 
 # il y a 10 essais de bases
 
 
