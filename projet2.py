@@ -26,7 +26,14 @@ nombre_max_d_essais = 10
 # liste avec les couleurs des pions :
 liste = [[0]*4 for i in range(nombre_max_d_essais)]
 liste2 = 0
+
+# variables de sauvegarde :
 liste_sauvegarde = []
+code_sauvegarde = []
+Essai_sauvegarde = 0
+colonne_sauvegarde = 0
+liste_ppions_sauv = []
+
 liste_ppions = [[0] for i in range(nombre_max_d_essais)]
 
 # Indicateur qui indique à quel essai on est:
@@ -51,12 +58,14 @@ HAUTEUR = 700
 # indicateur qui indique si on est en train de relancer une partie quand on est dans la fonction commencerpartie (permet
 # d'enlever tous les pions du jeu, et de tout réinitialiser)
 relancer = False
-# bouton pour arrêter la partie en cours
-bouton_arrêt = 0
+
 # indicateur qui indique si le jeu est arrêté (empêche de poser des pions)
 arrêt = False
-# bouton pour relancer une partie
-bouton_relancer = 0
+
+# Boutons
+bouton_arrêt = 0 # bouton pour arrêter la partie en cours
+bouton_relancer = 0 # bouton pour relancer une partie
+bouton_charger = 0 # bouton pour charger une partie
 
 # Variables globales :
 
@@ -95,7 +104,7 @@ def commencerpartie():
         # On enlève tous les Petits pions :
         for i in range(nombre_max_d_essais):
             for j in range(liste_ppions[i][0]):
-                objet = canvas.find_closest(375, 132 + (i*50))
+                objet = canvas.find_closest(350, 120 + (i*50))
                 canvas.delete(objet[0])
         codesecret = 0 # on réinitialise le compteur pour recréer un code en mode 2 joueurs
         if modesolo == 0:
@@ -110,7 +119,6 @@ def commencerpartie():
         liste_ppions = [[0] for i in range(nombre_max_d_essais)]
     # Text d'explication
     label1.config(text="Veuillez choisir un mode de jeux")
-    #bouton_load.config(text ="Arreter la partie")
     bouton_load.destroy()
     bouton_arrêt = tk.Button(racine, text="Arreter la partie", command=arreter_partie)
     bouton_arrêt.grid(column=3, row=3)
@@ -156,6 +164,7 @@ def choix_code1():
     for i in range(4): #on ajoute 4 couleurs à la liste 'code'
         c = rd.choice(couleurs_Gpion)
         code.append(c)
+    code = ['purple', 'purple', 'green', 'green']
     print(code) # Un code est choisi
 
 def quadrillage() : 
@@ -271,6 +280,7 @@ def PetitsPions():
     nombre2 = 0
     # on utilise une deuxième liste pour les pions blancs :
     liste2 = list(code)
+    ## Petits pions rouges :
     for i in range(4):
         if liste[Essai - 1][i] == code[i]:
             canvas.create_oval((320 + nombre*20, y0 + 50*(Essai - 1)), (335 + nombre*20, y0 + 50*(Essai - 1) + 15), fill="red")
@@ -279,7 +289,9 @@ def PetitsPions():
             liste2[i] = 0
             # on ajoute 1 à la liste ppion quand on ajoute des petits pions :
             liste_ppions[Essai - 1][0] += 1
+    ## Petits pions blancs :
     for i in range(4):
+        nbr_couleur_sup = 0 # indique quand on supprime une couleur de liste2
         # si la couleur liste[essai-1][i] est dans le code, mais pas à la bonne place, et que cette couleur dans le code
         # n'est pas déjà utilisée pour les pions rouges (cad qu'elle est dans liste2)... :
         if (liste[Essai - 1][i] in liste2) and (liste[Essai - 1][i] != code[i]):
@@ -291,8 +303,10 @@ def PetitsPions():
             # s'il y a une couleur déjà utilisé on l'enlève de liste2 :
             for j in range(4):
                 if liste2[j] == liste[Essai - 1][i]:
-                    liste2[j] = 0
-    # On ajoute 1 à Essai pour dire qu'on passe à l'eessai suivant
+                    if nbr_couleur_sup == 0:
+                        liste2[j] = 0
+                        nbr_couleur_sup += 1
+    # On ajoute 1 à Essai pour dire qu'on passe à l'essai suivant
     if Essai == 10:
         couleur_utilisee.configure(text="GAME OVER", fg="black")
     Essai += 1
@@ -302,15 +316,95 @@ def PetitsPions():
 def sauvegarde():
     """fonction qui sauvegarde la partie"""
     global liste_sauvegarde
+    global code_sauvegarde
+    global bouton_charger
+    global Essai_sauvegarde
+    global colonne_sauvegarde
+    global liste_ppions_sauv
     liste_sauvegarde = copy.deepcopy(liste) # permet de copier 'en profondeur' la liste
+    code_sauvegarde = code.copy()
+    Essai_sauvegarde = Essai
+    colonne_sauvegarde = colonne
+    liste_ppions_sauv = copy.deepcopy(liste_ppions)
+    bouton_charger = tk.Button(racine, text="charger la partie sauvegardée", command=charger_partie)
+    bouton_charger.grid(column=3, row=5)
+
+def charger_partie():
+    """fonction qui permet de charger une partie précédement sauvegardée"""
+    global liste
+    global liste_ppions
+    ### -On supprimme d'abord graphiquement l'ancienne partie, si ce n'est pas déjà fait, et on reprend les valeurs sauvegardées
+    # On enlève tous les Grands pions :
+    for i in range(nombre_max_d_essais):
+        for j in range(4):
+            if liste[i][j] != 0:
+                objet = canvas.find_closest(135 + (j*50), 125 + (i*50))
+                canvas.delete(objet[0])
+    # On reprend la liste sauvegardée :
+    liste = copy.deepcopy(liste_sauvegarde)
+    # On enlève tous les Petits pions :
+    for i in range(nombre_max_d_essais):
+        for j in range(liste_ppions[i][0]):
+            objet = canvas.find_closest(350, 120 + (i*50))
+            canvas.delete(objet[0])
+    if modesolo == 0:
+        for i in range(4): # Pour chaque cercle du code, on prend son identifiant, et on le supprime :
+                objet = canvas.find_closest(525 + (i*50), 45)
+                canvas.delete(objet[0])
+    # On reprend le code sauvegardé :
+    code = code_sauvegarde.copy()
+    # On reprend les indicateurs d'essais et de la colonne sauvegardés:
+    Essai, colonne = Essai_sauvegarde, colonne_sauvegarde
+    # On reprend la liste_ppions sauvegardée :
+    liste_ppions = copy.deepcopy(liste_ppions_sauv)
+    ### -Maintenant on recréer graphiquement la partie
+    for i in range(len(liste)):
+        for j in range(len(liste[i])):
+            if liste[i][j] != 0:
+                canvas.create_oval((x0 + j*50 , y0 + 50*i), (x1 + j*50, y1 + 50*i), fill = liste[i][j])               
+    ################## (Partie adaptée de la fonction petit pions)
+    # on utilise une deuxième liste pour les pions blancs :
+    for j in range(Essai):
+        liste2 = list(code)
+        nombre = 0
+        nombre2 = 0
+        ## Petits pions rouges :
+        for i in range(4):
+            if liste[j][i] == code[i]:
+                canvas.create_oval((320 + nombre*20, y0 + 50*j), (335 + nombre*20, y0 + 50*j + 15),\
+                 fill="red")
+                nombre += 1
+                # s'il y a une couleur déjà utilisé on l'enlève de liste2 :
+                liste2[i] = 0
+        ## Petits pions blancs :
+        for i in range(4):
+            nbr_couleur_sup = 0 # indique quand on supprime une couleur de liste2
+            # si la couleur liste[j][i] est dans le code, mais pas à la bonne place, et que cette couleur dans le code
+            # n'est pas déjà utilisée pour les pions rouges (cad qu'elle est dans liste2)... :
+            if (liste[j][i] in liste2) and (liste[j][i] != code[i]):
+                # ...on met un pion blanc
+                canvas.create_oval((320 + nombre2*20, y0 + 25 + 50*j), (335 + nombre2*20, y0 + 40 + 50*j)
+                , fill="white")
+                nombre2 += 1
+                # s'il y a une couleur déjà utilisé on l'enlève de liste2 :
+                for k in range(4):
+                    if liste2[k] == liste[j][i]:
+                        if nbr_couleur_sup == 0:
+                            liste2[k] = 0
+                            nbr_couleur_sup += 1
+        if j == 9:
+            couleur_utilisee.configure(text="GAME OVER", fg="black")
+    arrêt = False
     print(liste_ppions)
+    print(liste)
+    canvas.bind('<Button-1>', choisir_couleur)
 
 def arreter_partie():
+    """foncton qui permet d'arrêter une partie en cours"""
     global bouton_relancer
     global arrêt
     arrêt = True
     bouton_arrêt.destroy()
-    print(relancer)
     bouton_relancer = tk.Button(racine, text="relancer une partie", command=commencerpartie)
     bouton_relancer.grid(column=3, row=3)
 
@@ -344,7 +438,7 @@ quadrillage3()
 
 
 # Placement des widgets :
-canvas.grid(column=0, row=0, columnspan=3, rowspan=5)
+canvas.grid(column=0, row=0, columnspan=3, rowspan=6)
 bouton_sauv.grid(column=3, row=2)
 bouton_load.grid(column=3, row=3)
 bouton_triche.grid(column=3, row = 0)
@@ -372,10 +466,13 @@ canvas.mainloop()
 # début du fichier readme (je le fait dans la journée) (C)
 # -fin bouton arreter (T)
 # -fin bouton recommencer (T)
+# -mauvaises supressions des petits pions réglé (T)
+# -problème sur les petits pions quand des grands pions ont la même couleur, réglé (T)
+# -début fonction charger partie
 
 ## choses à faire:
-# -régler probleme avec bouton recommencer (mauvaises supressions des petits pions)
-#-faire fontionner les boutons sauvegarder ,aide et revenir en arriere
+# -finir bouton charger partie
+#-faire fontionner les boutons aide et revenir en arriere
 
 # REMARQUES :
 # -les essais sont les lignes et pas le nombre de grands pions que l'on peut mettre par ligne, 
