@@ -62,6 +62,7 @@ relancer = False
 
 # indicateur qui indique si le jeu est arrêté (empêche de poser des pions)
 arrêt = False
+sauvegarder = False
 
 # Boutons
 bouton_arrêt = 0 # bouton pour arrêter la partie en cours
@@ -220,16 +221,38 @@ def choisir_couleur(event):
         elif (x > 360 and x < 410):
             couleur = "purple"
         couleur_utilisee.configure(text=couleur, fg=couleur)
-        if arrêt == False:
+        #Si il s'agit d'une partie en cours et non sauvegardée, alors on debute un mode de jeu
+        if arrêt == False and sauvegarder == False :
             mode()
+        #Si il s'agit d'une partie sauvegardée, alors on continue avec le meme mode
+        elif sauvegarder == True: 
+            commencer_partie_sauvegardee()
+            
+
+
+def commencer_partie_sauvegardee():
+    """fonctions qui nous permet de placer les pions selon le mode de jeux lorsqu'on debute une partie sauvegardée"""
+    global colonne, Essai, code, liste_ppions, sauvegarder, codesecret
+    liste_ppions = liste_ppions_sauv.copy()
+    liste = liste_sauvegarde.copy()
+    if mode_sauvegarde == 1 : 
+        code = code_sauvegarde.copy()
+        colonne = colonne_sauvegarde 
+        Essai = Essai_sauvegarde 
+        GrandsPions()
+    if mode_sauvegarde == 0 :
+        codesecret = codesecret_sauvegarde.copy
+        GrandsPions2()   
+    sauvegarder = False 
+
 
 
 def mode():
     """fonctions qui nous permet de placer les pions selon le mode de jeux"""
     # En fonction du mode, les pions sont posés dans le code secret ou sur le jeu :
-    if modesolo == 1: 
+    if modesolo == 1 : 
         GrandsPions()
-    if modesolo == 0:
+    if modesolo == 0 :
         GrandsPions2()
 
 
@@ -237,13 +260,14 @@ def GrandsPions2():
     """fonction qui place les pions secret dans le mode de jeu 2 joueurs """
     global code
     global codesecret
+    global modesolo
     if codesecret < 4:
         canvas.create_oval((500 + (codesecret*50), 20), (550 + (codesecret*50), 70), fill = couleur)
         code.append(couleur)
         print(code)
         codesecret += 1
         if codesecret == 4:
-            label1.config(text="Qliquez sur une couleur pour cacher le code")
+            label1.config(text="Cliquez sur une couleur pour cacher le code")
     elif codesecret == 4:
         codesecret += 1
         for i in range(4): # Pour chaque cercle, on prend leur identifiant, et modifie leur couleur :
@@ -255,10 +279,11 @@ def GrandsPions2():
         GrandsPions()
 
 
+
 def GrandsPions():
     """fonction qui pose les grands pions de la couleur choisie sur le jeu"""
     global colonne
-    global Essai
+    global Essai, Essai_sauvegarde
     global nombre_max_d_essais
     if Essai <= nombre_max_d_essais:
         if colonne < 4 :
@@ -278,7 +303,7 @@ def PetitsPions():
     """fonction qui pose automatiquement les petits pions blancs et rouges en fonction de l'essai"""
     global liste2
     global liste_ppions
-    global Essai
+    global Essai,Essai_sauvegarde
     nombre = 0
     nombre2 = 0
     # on utilise une deuxième liste pour les pions blancs :
@@ -319,23 +344,31 @@ def PetitsPions():
 def sauvegarde():
     """fonction qui sauvegarde la partie"""
     global liste_sauvegarde
-    global code_sauvegarde
+    global code_sauvegarde 
+    global codesecret_sauvegarde
     global bouton_charger
-    global Essai_sauvegarde
+    global Essai_sauvegarde 
     global colonne_sauvegarde
     global liste_ppions_sauv
+    global mode_sauvegarde
+    global sauvegarder
+    sauvegarder = True
     liste_sauvegarde = copy.deepcopy(liste) # permet de copier 'en profondeur' la liste
     code_sauvegarde = code.copy()
+    codesecret_sauvegarde = codesecret
     Essai_sauvegarde = Essai
+    mode_sauvegarde = modesolo
     colonne_sauvegarde = colonne
     liste_ppions_sauv = copy.deepcopy(liste_ppions)
     bouton_charger = tk.Button(racine, text="charger la partie sauvegardée", command=charger_partie)
     bouton_charger.grid(column=3, row=5)
+    
 
 def charger_partie():
     """fonction qui permet de charger une partie précédement sauvegardée"""
     global liste
     global liste_ppions
+    global arrêt
     ### -On supprimme d'abord graphiquement l'ancienne partie, si ce n'est pas déjà fait, et on reprend les valeurs sauvegardées
     # On enlève tous les Grands pions :
     for i in range(nombre_max_d_essais):
@@ -400,6 +433,7 @@ def charger_partie():
     arrêt = False
     print(liste_ppions)
     print(liste)
+    print(code)
     canvas.bind('<Button-1>', choisir_couleur)
 
 def arreter_partie():
@@ -472,9 +506,13 @@ canvas.mainloop()
 # -mauvaises supressions des petits pions réglé (T)
 # -problème sur les petits pions quand des grands pions ont la même couleur, réglé (T)
 # -début fonction charger partie
+# -fin fonction charger partie
 
 ## choses à faire:
-# -finir bouton charger partie
+# -j'ai finit la fonction charger partie mais il reste des erreur à corriger dans les cas suivants:
+#     - lorsque je fais commence une partie et que je place pas tout les pions dans une ligne et que je la sauvegarde
+#       pour la reprendre ensuite, les Petits Pions ne marche pas bien au depart 
+#     -lorsque je fais des actions entre la sauvegarde d'une partie et la reprise de cette meme partie, la fonction ne marche pas
 #-faire fontionner les boutons aide et revenir en arriere
 
 # REMARQUES :
