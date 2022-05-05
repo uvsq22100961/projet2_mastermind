@@ -12,6 +12,7 @@
 import tkinter as tk
 import random as rd
 import copy
+from tkinter.font import NORMAL
 
 
 #########################
@@ -120,7 +121,7 @@ def commencerpartie():
     # Text d'explication
     label1.config(text="Veuillez choisir un mode de jeux")
     bouton_load.destroy()
-    bouton_arrêt = tk.Button(racine, text="Arreter la partie", command=arreter_partie)
+    bouton_arrêt = tk.Button(racine, text="Arreter la partie", command=arreter_partie, state=tk.DISABLED)
     bouton_arrêt.grid(column=3, row=3)
     # Boutons des deux modes :
     bouton_mode1.config(text="Mode 1 joueur", command= mode1joueur)
@@ -132,6 +133,7 @@ def mode1joueur():
     global modesolo
     global relancer
     global arrêt
+    bouton_arrêt.config(state=NORMAL)
     if arrêt == True:
         arrêt = False
     modesolo = 1 # lorsque le mode 1 joueur est vraie
@@ -147,6 +149,7 @@ def mode2joueurs():
     global modesolo
     global relancer
     global arrêt
+    bouton_arrêt.config(state=NORMAL)
     if arrêt == True:
         arrêt = False
     modesolo = 0 # le mode 1 joueur n'est pas vraie
