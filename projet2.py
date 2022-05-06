@@ -38,6 +38,7 @@ colonne_sauvegarde = 0
 liste_ppions_sauv = []
 codesecret_sauvegarde = 0
 mode_sauvegarde = 0
+mode_sauvegarde2  = 0 # n'est pas modifiée dans la fonction "GrandPions2" --> utile dans la fonction "commencerpartie"
 
 liste_ppions = [[0] for i in range(nombre_max_d_essais)]
 
@@ -52,6 +53,7 @@ codesecret= 0
 
 # Indicateur du mode de jeu (mode 1 joueur ou mode 2 joueurs):
 modesolo = 0
+modesolo2 = 0
 
 # Liste qui va contenir le code secret:
 code = []
@@ -64,11 +66,15 @@ HAUTEUR = 700
 # d'enlever tous les pions du jeu, et de tout réinitialiser)
 relancer = False
 
-# Indicateur qui indique si le jeu est arrêté (empêche de poser des pions)
+# Indicateur qui indique si le jeu est arrêté (empêche de poser des pions) :
 arrêt = False
 
-# Indicateur qui indique si la partie à laquelle on joue est une partie sauvegardée
+# Indicateur qui indique si la partie à laquelle on joue est une partie sauvegardée :
 sauvegarder = False
+
+# Indicateur qui indique si, quand on a sauvegardé une partie, on a déjà chargé cette partie (utilisé dans
+#  choisir_couleur):
+partie_chargee = False
 
 # Boutons
 bouton_arrêt = 0 # bouton pour arrêter la partie en cours
@@ -95,7 +101,7 @@ def commencerpartie():
     global arrêt
     global codesecret
     global code
-    global modesolo
+    global modesolo2
     global Essai
     global colonne
     global liste_ppions
@@ -115,7 +121,7 @@ def commencerpartie():
                 objet = canvas.find_closest(350, 120 + (i*50))
                 canvas.delete(objet[0])
         # En mode 2 joueurs, on enlève les cercles du code secret s'il y en a :
-        if modesolo == 0:
+        if modesolo2 == 0:
             for i in range(4): # Pour chaque cercle du code, on prend son identifiant, et on le supprime :
                 if i < codesecret:
                     objet = canvas.find_closest(525 + (i*50), 45)
@@ -140,12 +146,14 @@ def commencerpartie():
 def mode1joueur():
     """fonction qui demarre le mode 1 joueur"""
     global modesolo
+    global modesolo2
     global relancer
     global arrêt
     bouton_arrêt.config(state=NORMAL)
     if arrêt == True:
         arrêt = False
     modesolo = 1 # lorsque le mode 1 joueur est vraie
+    modesolo2
     if relancer == False:
         relancer = True
     label1.config(text="Veuillez choisir une combinaison de pions")
@@ -162,6 +170,7 @@ def mode2joueurs():
     if arrêt == True:
         arrêt = False
     modesolo = 0 # le mode 1 joueur n'est pas vraie
+    modesolo2 = 0
     if relancer == False:
         relancer = True
     label1.config(text="Veuillez choisir une combinaison de pions secret a l'abris des regards")
@@ -229,10 +238,10 @@ def choisir_couleur(event):
             couleur = "purple"
         couleur_utilisee.configure(text=couleur, fg=couleur)
         #Si il s'agit d'une partie en cours et non sauvegardée, alors on debute un mode de jeu
-        if arrêt == False and sauvegarder == False :
+        if arrêt == False and (sauvegarder == False or partie_chargee == False) :
             mode()
         #Si il s'agit d'une partie sauvegardée, alors on continue avec le meme mode
-        elif sauvegarder == True: 
+        elif sauvegarder == True and arrêt == False:
             commencer_partie_sauvegardee()
             
 
@@ -252,7 +261,6 @@ def commencer_partie_sauvegardee():
         codesecret = codesecret_sauvegarde
         GrandsPions2()   
     sauvegarder = False
-    arrêt = False
 
 
 
@@ -347,7 +355,6 @@ def PetitsPions():
     if Essai == 10:
         couleur_utilisee.configure(text="GAME OVER", fg="black")
     Essai += 1
-    print(liste)
     #canvas.bind('<Button-1>', choisir_couleur)
 
 
@@ -361,6 +368,7 @@ def sauvegarde():
     global colonne_sauvegarde
     global liste_ppions_sauv
     global mode_sauvegarde
+    global mode_sauvegarde2
     global sauvegarder
     sauvegarder = True
     liste_sauvegarde = copy.deepcopy(liste) # permet de copier 'en profondeur' la liste
@@ -368,6 +376,7 @@ def sauvegarde():
     codesecret_sauvegarde = codesecret
     Essai_sauvegarde = Essai
     mode_sauvegarde = modesolo
+    mode_sauvegarde2 = modesolo2
     colonne_sauvegarde = colonne
     liste_ppions_sauv = copy.deepcopy(liste_ppions)
     bouton_charger = tk.Button(racine, text="charger la partie sauvegardée", command=charger_partie)
@@ -378,6 +387,8 @@ def charger_partie():
     global liste
     global liste_ppions
     global arrêt
+    global partie_chargee
+    partie_chargee == True # on indique qu'on viens de charger la partie sauvegardée
     label1.config(text="Veuillez choisir une combinaison de pions")
     ### -On supprime d'abord graphiquement l'ancienne partie, si ce n'est pas déjà fait, et on reprend les valeurs sauvegardées
     # On enlève tous les Grands pions :
@@ -405,13 +416,16 @@ def charger_partie():
     Essai, colonne = Essai_sauvegarde, colonne_sauvegarde
     # On reprend la liste_ppions sauvegardée :
     liste_ppions = copy.deepcopy(liste_ppions_sauv)
+    modesolo2 = mode_sauvegarde2
     ### -Maintenant on recréer graphiquement la partie
+    # Les pions du code :
+    # les Grands Pions :
     for i in range(len(liste)):
         for j in range(len(liste[i])):
             if liste[i][j] != 0:
                 canvas.create_oval((x0 + j*50 , y0 + 50*i), (x1 + j*50, y1 + 50*i), fill = liste[i][j])               
-    ################## (Partie adaptée de la fonction petit pions)
-    print(colonne)
+    ################## (Partie adaptée de la fonction petit pions) Les Petits Pions
+    #print(colonne)
     if colonne != 0: # si le dernier essai sauvegardé ne contient pas 4 grands pions... :
         a = Essai - 2
     else: a = Essai
@@ -423,12 +437,13 @@ def charger_partie():
             nombre2 = 0
             ## Petits pions rouges :
             for i in range(4):
-                if liste[j][i] == code[i]:
-                    canvas.create_oval((320 + nombre*20, y0 + 50*j), (335 + nombre*20, y0 + 50*j + 15),\
-                    fill="red")
-                    nombre += 1
-                    # s'il y a une couleur déjà utilisé on l'enlève de liste2 :
-                    liste2[i] = 0
+                if i < codesecret:
+                    if liste[j][i] == code[i]:
+                        canvas.create_oval((320 + nombre*20, y0 + 50*j), (335 + nombre*20, y0 + 50*j + 15),\
+                        fill="red")
+                        nombre += 1
+                        # s'il y a une couleur déjà utilisé on l'enlève de liste2 :
+                        liste2[i] = 0
             ## Petits pions blancs :
             for i in range(4):
                 nbr_couleur_sup = 0 # indique quand on supprime une couleur de liste2
@@ -466,7 +481,6 @@ def retourner_en_arrière():
     """Fonction qui permet de revenir en arrière"""
     global Essai, colonne
     rev=[]
-    print(liste)
     for e in reversed(liste): # on lit la liste dans l'ordre inverse,
         # dans un premier temps, on cherche la derniere liste dans la liste qui contient des elements
         if e != [0, 0, 0, 0] : 
@@ -477,7 +491,8 @@ def retourner_en_arrière():
                 if e != [0]:
                     colonne = rev.index(e) # list.index(valeur,start,end)
                     liste[Essai][colonne] = 0
-                    canvas.create_oval((x0 + (colonne)*50 , y0 + 50*(Essai )), (x1 + (colonne)*50, y1 + 50*(Essai )), fill = "peru")
+                    canvas.create_oval((x0 + (colonne)*50 , y0 + 50*(Essai )), (x1 + (colonne)*50, y1 + 50*(Essai )),\
+                     fill = "peru")
                     Essai += 1
                     break
             break
@@ -547,12 +562,9 @@ canvas.mainloop()
 # -problème de disparition du code secret en mode 2 joueur lors du chargement d'une partie, réglé (T)
 # -problème des Petits Pions quand on charge une partie où on a pas placé tous les Grands Pions sur la dernière ligne, réglé (T)
 # -debut revenir en arrière mais pas mal de soucis (C)
+# -problème pour charger une partie quand on joue une nouvelle partie avant de la charher, réglé (T)
 
 ## choses à faire:
-# -j'ai finit la fonction charger partie mais il reste des erreur à corriger dans les cas suivants:
-#     -lorsque je fais des actions entre la sauvegarde d'une partie et la reprise de cette meme partie, la fonction ne marche pas
-#       (moi j'ai vu qu'il y avait un problème de reprise de la ligne --> problème de réinitialisation (peut-être variable global)
-#       de la variable "Essai" je pense (T))
 #-faire fontionner les boutons aide et revenir en arriere
 
 # REMARQUES :
