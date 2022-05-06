@@ -35,6 +35,8 @@ code_sauvegarde = []
 Essai_sauvegarde = 0
 colonne_sauvegarde = 0
 liste_ppions_sauv = []
+codesecret_sauvegarde = 0
+mode_sauvegarde = 0
 
 liste_ppions = [[0] for i in range(nombre_max_d_essais)]
 
@@ -111,11 +113,13 @@ def commencerpartie():
             for j in range(liste_ppions[i][0]):
                 objet = canvas.find_closest(350, 120 + (i*50))
                 canvas.delete(objet[0])
-        codesecret = 0 # on réinitialise le compteur pour recréer un code en mode 2 joueurs
+        # En mode 2 joueurs, on enlève les cercles du code secret s'il y en a :
         if modesolo == 0:
             for i in range(4): # Pour chaque cercle du code, on prend son identifiant, et on le supprime :
+                if i < codesecret:
                     objet = canvas.find_closest(525 + (i*50), 45)
                     canvas.delete(objet[0])
+        codesecret = 0 # on réinitialise le compteur pour recréer un code en mode 2 joueurs
         # On réinitialise le code :
         code = []
         # On réinitialise les indicateurs d'essais et de la colonne :
@@ -171,7 +175,6 @@ def choix_code1():
     for i in range(4): #on ajoute 4 couleurs à la liste 'code'
         c = rd.choice(couleurs_Gpion)
         code.append(c)
-    code = ['purple', 'purple', 'green', 'green']
     print(code) # Un code est choisi
 
 def quadrillage() : 
@@ -235,19 +238,20 @@ def choisir_couleur(event):
 
 def commencer_partie_sauvegardee():
     """fonctions qui nous permet de placer les pions selon le mode de jeux lorsqu'on debute une partie sauvegardée"""
-    global colonne, Essai, code, liste_ppions, sauvegarder, codesecret
+    global colonne, Essai, code, liste_ppions, sauvegarder, codesecret, arrêt
     bouton_arrêt.config(state=NORMAL)
     liste_ppions = liste_ppions_sauv.copy()
     liste = liste_sauvegarde.copy()
-    if mode_sauvegarde == 1 : 
+    if mode_sauvegarde == 1 :
         code = code_sauvegarde.copy()
         colonne = colonne_sauvegarde 
-        Essai = Essai_sauvegarde 
+        Essai = Essai_sauvegarde
         GrandsPions()
     if mode_sauvegarde == 0 :
-        codesecret = codesecret_sauvegarde.copy
+        codesecret = codesecret_sauvegarde
         GrandsPions2()   
-    sauvegarder = False 
+    sauvegarder = False
+    arrêt = False
 
 
 
@@ -388,8 +392,10 @@ def charger_partie():
         for j in range(liste_ppions[i][0]):
             objet = canvas.find_closest(350, 120 + (i*50))
             canvas.delete(objet[0])
+    # En mode 2 joueurs, on enlève les cercles du code secret s'il y en a:
     if modesolo == 0:
         for i in range(4): # Pour chaque cercle du code, on prend son identifiant, et on le supprime :
+            if i < codesecret:
                 objet = canvas.find_closest(525 + (i*50), 45)
                 canvas.delete(objet[0])
     # On reprend le code sauvegardé :
@@ -404,41 +410,45 @@ def charger_partie():
             if liste[i][j] != 0:
                 canvas.create_oval((x0 + j*50 , y0 + 50*i), (x1 + j*50, y1 + 50*i), fill = liste[i][j])               
     ################## (Partie adaptée de la fonction petit pions)
-    # on utilise une deuxième liste pour les pions blancs :
-    for j in range(Essai):
-        liste2 = list(code)
-        nombre = 0
-        nombre2 = 0
-        ## Petits pions rouges :
-        for i in range(4):
-            if liste[j][i] == code[i]:
-                canvas.create_oval((320 + nombre*20, y0 + 50*j), (335 + nombre*20, y0 + 50*j + 15),\
-                 fill="red")
-                nombre += 1
-                # s'il y a une couleur déjà utilisé on l'enlève de liste2 :
-                liste2[i] = 0
-        ## Petits pions blancs :
-        for i in range(4):
-            nbr_couleur_sup = 0 # indique quand on supprime une couleur de liste2
-            # si la couleur liste[j][i] est dans le code, mais pas à la bonne place, et que cette couleur dans le code
-            # n'est pas déjà utilisée pour les pions rouges (cad qu'elle est dans liste2)... :
-            if (liste[j][i] in liste2) and (liste[j][i] != code[i]):
-                # ...on met un pion blanc
-                canvas.create_oval((320 + nombre2*20, y0 + 25 + 50*j), (335 + nombre2*20, y0 + 40 + 50*j)
-                , fill="white")
-                nombre2 += 1
-                # s'il y a une couleur déjà utilisé on l'enlève de liste2 :
-                for k in range(4):
-                    if liste2[k] == liste[j][i]:
-                        if nbr_couleur_sup == 0:
-                            liste2[k] = 0
-                            nbr_couleur_sup += 1
-        if j == 9:
-            couleur_utilisee.configure(text="GAME OVER", fg="black")
+    print(colonne)
+    if colonne != 0: # si le dernier essai sauvegardé ne contient pas 4 grands pions... :
+        a = Essai - 2
+    else: a = Essai
+    for j in range(Essai): # on pose les petits pions pour chaque essais
+        if (j <= a): # on pose les petits pions ssi on est sur une ligne avec 4 grands pions placés
+            # on utilise une deuxième liste pour les pions blancs :
+            liste2 = list(code)
+            nombre = 0
+            nombre2 = 0
+            ## Petits pions rouges :
+            for i in range(4):
+                if liste[j][i] == code[i]:
+                    canvas.create_oval((320 + nombre*20, y0 + 50*j), (335 + nombre*20, y0 + 50*j + 15),\
+                    fill="red")
+                    nombre += 1
+                    # s'il y a une couleur déjà utilisé on l'enlève de liste2 :
+                    liste2[i] = 0
+            ## Petits pions blancs :
+            for i in range(4):
+                nbr_couleur_sup = 0 # indique quand on supprime une couleur de liste2
+                    # si la couleur liste[j][i] est dans le code, mais pas à la bonne place, et que cette couleur dans le code
+                # n'est pas déjà utilisée pour les pions rouges (cad qu'elle est dans liste2)... :
+                if (liste[j][i] in liste2) and (liste[j][i] != code[i]):
+                    # ...on met un pion blanc
+                    canvas.create_oval((320 + nombre2*20, y0 + 25 + 50*j), (335 + nombre2*20, y0 + 40 + 50*j)
+                    , fill="white")
+                    nombre2 += 1
+                    # s'il y a une couleur déjà utilisé on l'enlève de liste2 :
+                    for k in range(4):
+                        if liste2[k] == liste[j][i]:
+                            if nbr_couleur_sup == 0:
+                                liste2[k] = 0
+                                nbr_couleur_sup += 1
+            if j == 9:
+                couleur_utilisee.configure(text="GAME OVER", fg="black")
     arrêt = False
     print(liste_ppions)
     print(liste)
-    print(code)
     canvas.bind('<Button-1>', choisir_couleur)
 
 def arreter_partie():
@@ -510,14 +520,16 @@ canvas.mainloop()
 # -fin bouton recommencer (T)
 # -mauvaises supressions des petits pions réglé (T)
 # -problème sur les petits pions quand des grands pions ont la même couleur, réglé (T)
-# -début fonction charger partie
-# -fin fonction charger partie
+# -fonction sauvgarde et début fonction charger partie (T)
+# -fonction commencer_partie_sauvegardee et fin fonction charger partie (M)
+# -problème de disparition du code secret en mode 2 joueur lors du chargement d'une partie, réglé (T)
+# -problème des Petits Pions quand on charge une partie où on a pas placé tous les Grands Pions sur la dernière ligne, réglé (T)
 
 ## choses à faire:
 # -j'ai finit la fonction charger partie mais il reste des erreur à corriger dans les cas suivants:
-#     - lorsque je fais commence une partie et que je place pas tout les pions dans une ligne et que je la sauvegarde
-#       pour la reprendre ensuite, les Petits Pions ne marche pas bien au depart 
 #     -lorsque je fais des actions entre la sauvegarde d'une partie et la reprise de cette meme partie, la fonction ne marche pas
+#       (moi j'ai vu qu'il y avait un problème de reprise de la ligne --> problème de réinitialisation (peut-être variable global)
+#       de la variable "Essai" je pense (T))
 #-faire fontionner les boutons aide et revenir en arriere
 
 # REMARQUES :
