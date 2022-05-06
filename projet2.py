@@ -13,6 +13,7 @@ import tkinter as tk
 import random as rd
 import copy
 from tkinter.font import NORMAL
+from tracemalloc import start
 
 
 #########################
@@ -342,6 +343,7 @@ def PetitsPions():
     if Essai == 10:
         couleur_utilisee.configure(text="GAME OVER", fg="black")
     Essai += 1
+    print(liste)
     #canvas.bind('<Button-1>', choisir_couleur)
 
 
@@ -366,7 +368,6 @@ def sauvegarde():
     liste_ppions_sauv = copy.deepcopy(liste_ppions)
     bouton_charger = tk.Button(racine, text="charger la partie sauvegardée", command=charger_partie)
     bouton_charger.grid(column=3, row=5)
-    
 
 def charger_partie():
     """fonction qui permet de charger une partie précédement sauvegardée"""
@@ -374,7 +375,7 @@ def charger_partie():
     global liste_ppions
     global arrêt
     label1.config(text="Veuillez choisir une combinaison de pions")
-    ### -On supprimme d'abord graphiquement l'ancienne partie, si ce n'est pas déjà fait, et on reprend les valeurs sauvegardées
+    ### -On supprime d'abord graphiquement l'ancienne partie, si ce n'est pas déjà fait, et on reprend les valeurs sauvegardées
     # On enlève tous les Grands pions :
     for i in range(nombre_max_d_essais):
         for j in range(4):
@@ -451,6 +452,27 @@ def arreter_partie():
     bouton_relancer.grid(column=3, row=3)
 
 
+def retourner_en_arrière():
+    """Fonction qui permet de revenir en arrière"""
+    global Essai, colonne
+    rev=[]
+    print(liste)
+    for e in reversed(liste): # on lit la liste dans l'ordre inverse,
+        # dans un premier temps, on cherche la derniere liste dans la liste qui contient des elements
+        if e != [0, 0, 0, 0] : 
+            rev = e
+            Essai = liste.index(e)
+            # dans un second temps, on cherche le dernier element de cette liste .
+            for e in reversed(rev): 
+                if e != [0]:
+                    colonne = rev.index(e) # list.index(valeur,start,end)
+                    liste[Essai][colonne] = 0
+                    canvas.create_oval((x0 + (colonne)*50 , y0 + 50*(Essai )), (x1 + (colonne)*50, y1 + 50*(Essai )), fill = "peru")
+                    Essai += 1
+                    break
+            break
+    #ne fonctionne pas pour l'instant: lorsqu'il ya 2 element de meme couleurs la fonction index() retourne le premier
+    # element de la liste au lieu du dernier, l'alternative (start / end) ne marche pas non plus
 
 
 # Création des widgets :
@@ -459,7 +481,7 @@ canvas = tk.Canvas(racine, height= HAUTEUR, width= LARGEUR, bg="grey")
 Titre = racine.title("Mastermind")
 bouton_sauv = tk.Button(racine, text="Sauvegarder partie", command=sauvegarde)
 bouton_load = tk.Button(racine, text="Commencer une nouvelle partie", command= commencerpartie)
-bouton_triche = tk.Button(racine, text="revenir en arrière")
+bouton_triche = tk.Button(racine, text="revenir en arrière",command= retourner_en_arrière)
 bouton_aide = tk.Button(racine, text="aide")
 bouton_mode1 = tk.Button(racine)
 bouton_mode2 = tk.Button(racine)
@@ -512,6 +534,7 @@ canvas.mainloop()
 # -problème sur les petits pions quand des grands pions ont la même couleur, réglé (T)
 # -début fonction charger partie
 # -fin fonction charger partie
+# -debut revenir en arrière mais pas mal de soucis
 
 ## choses à faire:
 # -j'ai finit la fonction charger partie mais il reste des erreur à corriger dans les cas suivants:
