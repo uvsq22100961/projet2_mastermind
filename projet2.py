@@ -7,7 +7,7 @@
 
 
 ##########################
-# import des bibliothèques 
+# Import des bibliothèques 
 
 import tkinter as tk
 import random as rd
@@ -16,7 +16,7 @@ from tkinter.font import NORMAL
 
 
 #########################
-# variables 
+# Variables 
 
 x0 = 110 
 y0 = 100
@@ -24,11 +24,12 @@ x1 = 160
 y1 =  150
 
 nombre_max_d_essais = 10
-# liste avec les couleurs des pions :
+
+# Liste avec les couleurs des pions :
 liste = [[0]*4 for i in range(nombre_max_d_essais)]
 liste2 = 0
 
-# variables de sauvegarde :
+# Variables de sauvegarde :
 liste_sauvegarde = []
 code_sauvegarde = []
 Essai_sauvegarde = 0
@@ -56,12 +57,14 @@ code = []
 LARGEUR = 800
 HAUTEUR = 700
 
-# indicateur qui indique si on est en train de relancer une partie quand on est dans la fonction commencerpartie (permet
+# Indicateur qui indique si on est en train de relancer une partie quand on est dans la fonction commencerpartie (permet
 # d'enlever tous les pions du jeu, et de tout réinitialiser)
 relancer = False
 
-# indicateur qui indique si le jeu est arrêté (empêche de poser des pions)
+# Indicateur qui indique si le jeu est arrêté (empêche de poser des pions)
 arrêt = False
+
+# Indicateur qui indique si la partie à laquelle on joue est une partie sauvegardée
 sauvegarder = False
 
 # Boutons
@@ -233,6 +236,7 @@ def choisir_couleur(event):
 def commencer_partie_sauvegardee():
     """fonctions qui nous permet de placer les pions selon le mode de jeux lorsqu'on debute une partie sauvegardée"""
     global colonne, Essai, code, liste_ppions, sauvegarder, codesecret
+    bouton_arrêt.config(state=NORMAL)
     liste_ppions = liste_ppions_sauv.copy()
     liste = liste_sauvegarde.copy()
     if mode_sauvegarde == 1 : 
@@ -369,6 +373,7 @@ def charger_partie():
     global liste
     global liste_ppions
     global arrêt
+    label1.config(text="Veuillez choisir une combinaison de pions")
     ### -On supprimme d'abord graphiquement l'ancienne partie, si ce n'est pas déjà fait, et on reprend les valeurs sauvegardées
     # On enlève tous les Grands pions :
     for i in range(nombre_max_d_essais):
