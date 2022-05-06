@@ -40,6 +40,9 @@ codesecret_sauvegarde = 0
 mode_sauvegarde = 0
 mode_sauvegarde2  = 0 # n'est pas modifiée dans la fonction "GrandPions2" --> utile dans la fonction "commencerpartie"
 
+# liste pour l'aide : 
+aide = []
+
 liste_ppions = [[0] for i in range(nombre_max_d_essais)]
 
 # Indicateur qui indique à quel essai on est:
@@ -499,6 +502,15 @@ def retourner_en_arrière():
     #ne fonctionne pas pour l'instant: lorsqu'il ya 2 element de meme couleurs la fonction index() retourne le premier
     # element de la liste au lieu du dernier, l'alternative (start / end) ne marche pas non plus
 
+def aide() : 
+    """fonction qui propose un code avec les informations des essais précédents, sans donner le code secret"""
+    global aide 
+    # note pour continuer la fonction :  aide est une liste vide
+    # en fonction du nombre d'essai effectué, ajouter 4 couleurs déjà utilisées par l'utilisateur dans la liste et les afficher 
+    # faire en sorte que l'aide ne soit pas identique au code secret 
+    
+
+
 
 # Création des widgets :
 racine = tk.Tk()
@@ -507,7 +519,7 @@ Titre = racine.title("Mastermind")
 bouton_sauv = tk.Button(racine, text="Sauvegarder partie", command=sauvegarde)
 bouton_load = tk.Button(racine, text="Commencer une nouvelle partie", command= commencerpartie)
 bouton_triche = tk.Button(racine, text="revenir en arrière",command= retourner_en_arrière)
-bouton_aide = tk.Button(racine, text="aide")
+bouton_aide = tk.Button(racine, text="aide", command=aide)
 bouton_mode1 = tk.Button(racine)
 bouton_mode2 = tk.Button(racine)
 
@@ -563,6 +575,7 @@ canvas.mainloop()
 # -problème des Petits Pions quand on charge une partie où on a pas placé tous les Grands Pions sur la dernière ligne, réglé (T)
 # -debut revenir en arrière mais pas mal de soucis (C)
 # -problème pour charger une partie quand on joue une nouvelle partie avant de la charher, réglé (T)
+# début de la fonction aide 
 
 ## choses à faire:
 #-faire fontionner les boutons aide et revenir en arriere
