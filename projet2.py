@@ -391,7 +391,7 @@ def charger_partie():
     global liste_ppions
     global arrêt
     global partie_chargee
-    partie_chargee == True # on indique qu'on viens de charger la partie sauvegardée
+    partie_chargee = True # on indique qu'on viens de charger la partie sauvegardée
     label1.config(text="Veuillez choisir une combinaison de pions")
     ### -On supprime d'abord graphiquement l'ancienne partie, si ce n'est pas déjà fait, et on reprend les valeurs sauvegardées
     # On enlève tous les Grands pions :
@@ -421,7 +421,6 @@ def charger_partie():
     liste_ppions = copy.deepcopy(liste_ppions_sauv)
     modesolo2 = mode_sauvegarde2
     ### -Maintenant on recréer graphiquement la partie
-    # Les pions du code :
     # les Grands Pions :
     for i in range(len(liste)):
         for j in range(len(liste[i])):
@@ -440,7 +439,6 @@ def charger_partie():
             nombre2 = 0
             ## Petits pions rouges :
             for i in range(4):
-                if i < codesecret:
                     if liste[j][i] == code[i]:
                         canvas.create_oval((320 + nombre*20, y0 + 50*j), (335 + nombre*20, y0 + 50*j + 15),\
                         fill="red")
@@ -467,7 +465,7 @@ def charger_partie():
                 couleur_utilisee.configure(text="GAME OVER", fg="black")
     arrêt = False
     print(liste_ppions)
-    print(liste)
+    #print(liste)
     canvas.bind('<Button-1>', choisir_couleur)
 
 def arreter_partie():
@@ -575,7 +573,8 @@ canvas.mainloop()
 # -problème des Petits Pions quand on charge une partie où on a pas placé tous les Grands Pions sur la dernière ligne, réglé (T)
 # -debut revenir en arrière mais pas mal de soucis (C)
 # -problème pour charger une partie quand on joue une nouvelle partie avant de la charher, réglé (T)
-# début de la fonction aide 
+# début de la fonction aide
+# -problèmes de la reprise de ligne, et de l'apparition des petits pions rouges, réglé (T)
 
 ## choses à faire:
 #-faire fontionner les boutons aide et revenir en arriere
