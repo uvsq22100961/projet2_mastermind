@@ -488,15 +488,36 @@ def retourner_en_arrière():
         # dans un premier temps, on cherche la derniere liste dans la liste qui contient des elements
         if e != [0, 0, 0, 0] : 
             rev = e
+            print(rev)
             Essai = liste.index(e)
             # dans un second temps, on cherche le dernier element de cette liste .
             for e in reversed(rev): 
                 if e != [0]:
                     colonne = rev.index(e,-1) 
-                    liste[Essai][colonne] = 0
-                    canvas.create_oval((x0 + (colonne)*50 , y0 + 50*(Essai )), (x1 + (colonne)*50, y1 + 50*(Essai )),\
-                     fill = "peru")
-                    Essai += 1
+                    print(colonne,Essai)
+                    if rev.count(0) == 0:
+                        liste[Essai][colonne] = 0
+                        canvas.create_oval((x0 + (colonne)*50 , y0 + 50*(Essai )), (x1 + (colonne)*50, y1 + 50*(Essai)),\
+                        fill = "peru")
+                        Essai +=1
+                    elif rev.count(0) == 1:
+                        colonne-=1
+                        liste[Essai][colonne] = 0
+                        canvas.create_oval((x0 + (colonne)*50 , y0 + 50*(Essai )), (x1 + (colonne)*50, y1 + 50*(Essai)),\
+                        fill = "peru")
+                        Essai +=1
+                    elif rev.count(0) == 2:
+                        colonne-=2
+                        liste[Essai][colonne] = 0
+                        canvas.create_oval((x0 + (colonne)*50 , y0 + 50*(Essai )), (x1 + (colonne)*50, y1 + 50*(Essai)),\
+                        fill = "peru")
+                        Essai +=1
+                    elif rev.count(0) == 3:
+                        colonne-=3
+                        liste[Essai][colonne] = 0
+                        canvas.create_oval((x0 + (colonne)*50 , y0 + 50*(Essai )), (x1 + (colonne)*50, y1 + 50*(Essai)),\
+                        fill = "peru")
+                        Essai +=1
                     break
             break
 
@@ -572,12 +593,13 @@ canvas.mainloop()
 # -fonction commencer_partie_sauvegardee et fin fonction charger partie (M)
 # -problème de disparition du code secret en mode 2 joueur lors du chargement d'une partie, réglé (T)
 # -problème des Petits Pions quand on charge une partie où on a pas placé tous les Grands Pions sur la dernière ligne, réglé (T)
-# -debut revenir en arrière mais pas mal de soucis (C)
+# -Fonction revenir en arrière terminée (T)
 # -problème pour charger une partie quand on joue une nouvelle partie avant de la charher, réglé (T)
 # début de la fonction aide 
 
 ## choses à faire:
-#-faire fontionner les boutons aide et revenir en arriere
+# Parcontre, j'ai remarquer que la fonction charger partie ne marche pas correctiment, il faut revoir
+#-faire fontionner les boutons aide 
 
 # REMARQUES :
 # -les essais sont les lignes et pas le nombre de grands pions que l'on peut mettre par ligne, 
