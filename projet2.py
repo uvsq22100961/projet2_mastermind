@@ -9,14 +9,14 @@
 ##########################
 # Import des bibliothèques 
 
-from re import X
+
 import tkinter as tk
 import random as rd
 import copy
 from tkinter.font import NORMAL
 from tracemalloc import start
 from turtle import left
-from venv import create
+
 
 
 #########################
