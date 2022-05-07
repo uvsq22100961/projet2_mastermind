@@ -492,15 +492,14 @@ def retourner_en_arrière():
             # dans un second temps, on cherche le dernier element de cette liste .
             for e in reversed(rev): 
                 if e != [0]:
-                    colonne = rev.index(e) # list.index(valeur,start,end)
+                    colonne = rev.index(e,-1) 
                     liste[Essai][colonne] = 0
                     canvas.create_oval((x0 + (colonne)*50 , y0 + 50*(Essai )), (x1 + (colonne)*50, y1 + 50*(Essai )),\
                      fill = "peru")
                     Essai += 1
                     break
             break
-    #ne fonctionne pas pour l'instant: lorsqu'il ya 2 element de meme couleurs la fonction index() retourne le premier
-    # element de la liste au lieu du dernier, l'alternative (start / end) ne marche pas non plus
+
 
 def aide() : 
     """fonction qui propose un code avec les informations des essais précédents, sans donner le code secret"""
