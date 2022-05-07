@@ -153,6 +153,7 @@ def mode1joueur():
     global relancer
     global arrêt
     bouton_arrêt.config(state=NORMAL)
+    bouton_triche.config(state=NORMAL)
     if arrêt == True:
         arrêt = False
     modesolo = 1 # lorsque le mode 1 joueur est vraie
@@ -170,6 +171,7 @@ def mode2joueurs():
     global relancer
     global arrêt
     bouton_arrêt.config(state=NORMAL)
+    bouton_triche.config(state=NORMAL)
     if arrêt == True:
         arrêt = False
     modesolo = 0 # le mode 1 joueur n'est pas vraie
@@ -253,6 +255,7 @@ def commencer_partie_sauvegardee():
     """fonctions qui nous permet de placer les pions selon le mode de jeux lorsqu'on debute une partie sauvegardée"""
     global colonne, Essai, code, liste_ppions, sauvegarder, codesecret, arrêt
     bouton_arrêt.config(state=NORMAL)
+    bouton_triche.config(state=NORMAL)
     liste_ppions = liste_ppions_sauv.copy()
     liste = liste_sauvegarde.copy()
     if mode_sauvegarde == 1 :
@@ -490,15 +493,22 @@ def retourner_en_arrière():
             # dans un second temps, on cherche le dernier element de cette liste .
             for e in reversed(rev): 
                 if e != [0]:
-                    colonne = rev.index(e) # list.index(valeur,start,end)
+                    colonne = rev.index(e,-1) 
+                    if rev.count(0) == 0: 
+                        pass
+                    elif rev.count(0) == 1:
+                        colonne-=1
+                    elif rev.count(0) == 2:
+                        colonne-=2
+                    elif rev.count(0) == 3:
+                        colonne-=3
                     liste[Essai][colonne] = 0
-                    canvas.create_oval((x0 + (colonne)*50 , y0 + 50*(Essai )), (x1 + (colonne)*50, y1 + 50*(Essai )),\
-                     fill = "peru")
-                    Essai += 1
+                    canvas.create_oval((x0 + (colonne)*50 , y0 + 50*(Essai )), (x1 + (colonne)*50, y1 + 50*(Essai)),\
+                    fill = "peru")
+                    Essai +=1
                     break
             break
-    #ne fonctionne pas pour l'instant: lorsqu'il ya 2 element de meme couleurs la fonction index() retourne le premier
-    # element de la liste au lieu du dernier, l'alternative (start / end) ne marche pas non plus
+
 
 def aide() : 
     """fonction qui propose un code avec les informations des essais précédents, sans donner le code secret"""
@@ -516,7 +526,7 @@ canvas = tk.Canvas(racine, height= HAUTEUR, width= LARGEUR, bg="grey")
 Titre = racine.title("Mastermind")
 bouton_sauv = tk.Button(racine, text="Sauvegarder partie", command=sauvegarde)
 bouton_load = tk.Button(racine, text="Commencer une nouvelle partie", command= commencerpartie)
-bouton_triche = tk.Button(racine, text="revenir en arrière",command= retourner_en_arrière)
+bouton_triche = tk.Button(racine, text="revenir en arrière",command= retourner_en_arrière,state=tk.DISABLED)
 bouton_aide = tk.Button(racine, text="aide", command=aide)
 bouton_mode1 = tk.Button(racine)
 bouton_mode2 = tk.Button(racine)
@@ -571,13 +581,14 @@ canvas.mainloop()
 # -fonction commencer_partie_sauvegardee et fin fonction charger partie (M)
 # -problème de disparition du code secret en mode 2 joueur lors du chargement d'une partie, réglé (T)
 # -problème des Petits Pions quand on charge une partie où on a pas placé tous les Grands Pions sur la dernière ligne, réglé (T)
-# -debut revenir en arrière mais pas mal de soucis (C)
+# -Fonction revenir en arrière terminée (T)
 # -problème pour charger une partie quand on joue une nouvelle partie avant de la charher, réglé (T)
 # début de la fonction aide
 # -problèmes de la reprise de ligne, et de l'apparition des petits pions rouges, réglé (T)
 
 ## choses à faire:
-#-faire fontionner les boutons aide et revenir en arriere
+# Parcontre, j'ai remarquer que la fonction charger partie ne marche pas correctiment, il faut revoir
+#-faire fontionner les boutons aide 
 
 # REMARQUES :
 # -les essais sont les lignes et pas le nombre de grands pions que l'on peut mettre par ligne, 
