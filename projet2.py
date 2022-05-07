@@ -488,36 +488,23 @@ def retourner_en_arrière():
         # dans un premier temps, on cherche la derniere liste dans la liste qui contient des elements
         if e != [0, 0, 0, 0] : 
             rev = e
-            print(rev)
             Essai = liste.index(e)
             # dans un second temps, on cherche le dernier element de cette liste .
             for e in reversed(rev): 
                 if e != [0]:
                     colonne = rev.index(e,-1) 
-                    print(colonne,Essai)
-                    if rev.count(0) == 0:
-                        liste[Essai][colonne] = 0
-                        canvas.create_oval((x0 + (colonne)*50 , y0 + 50*(Essai )), (x1 + (colonne)*50, y1 + 50*(Essai)),\
-                        fill = "peru")
-                        Essai +=1
+                    if rev.count(0) == 0: 
+                        pass
                     elif rev.count(0) == 1:
                         colonne-=1
-                        liste[Essai][colonne] = 0
-                        canvas.create_oval((x0 + (colonne)*50 , y0 + 50*(Essai )), (x1 + (colonne)*50, y1 + 50*(Essai)),\
-                        fill = "peru")
-                        Essai +=1
                     elif rev.count(0) == 2:
                         colonne-=2
-                        liste[Essai][colonne] = 0
-                        canvas.create_oval((x0 + (colonne)*50 , y0 + 50*(Essai )), (x1 + (colonne)*50, y1 + 50*(Essai)),\
-                        fill = "peru")
-                        Essai +=1
                     elif rev.count(0) == 3:
                         colonne-=3
-                        liste[Essai][colonne] = 0
-                        canvas.create_oval((x0 + (colonne)*50 , y0 + 50*(Essai )), (x1 + (colonne)*50, y1 + 50*(Essai)),\
-                        fill = "peru")
-                        Essai +=1
+                    liste[Essai][colonne] = 0
+                    canvas.create_oval((x0 + (colonne)*50 , y0 + 50*(Essai )), (x1 + (colonne)*50, y1 + 50*(Essai)),\
+                    fill = "peru")
+                    Essai +=1
                     break
             break
 
