@@ -153,6 +153,7 @@ def mode1joueur():
     global relancer
     global arrêt
     bouton_arrêt.config(state=NORMAL)
+    bouton_triche.config(state=NORMAL)
     if arrêt == True:
         arrêt = False
     modesolo = 1 # lorsque le mode 1 joueur est vraie
@@ -170,6 +171,7 @@ def mode2joueurs():
     global relancer
     global arrêt
     bouton_arrêt.config(state=NORMAL)
+    bouton_triche.config(state=NORMAL)
     if arrêt == True:
         arrêt = False
     modesolo = 0 # le mode 1 joueur n'est pas vraie
@@ -253,6 +255,7 @@ def commencer_partie_sauvegardee():
     """fonctions qui nous permet de placer les pions selon le mode de jeux lorsqu'on debute une partie sauvegardée"""
     global colonne, Essai, code, liste_ppions, sauvegarder, codesecret, arrêt
     bouton_arrêt.config(state=NORMAL)
+    bouton_triche.config(state=NORMAL)
     liste_ppions = liste_ppions_sauv.copy()
     liste = liste_sauvegarde.copy()
     if mode_sauvegarde == 1 :
@@ -525,7 +528,7 @@ canvas = tk.Canvas(racine, height= HAUTEUR, width= LARGEUR, bg="grey")
 Titre = racine.title("Mastermind")
 bouton_sauv = tk.Button(racine, text="Sauvegarder partie", command=sauvegarde)
 bouton_load = tk.Button(racine, text="Commencer une nouvelle partie", command= commencerpartie)
-bouton_triche = tk.Button(racine, text="revenir en arrière",command= retourner_en_arrière)
+bouton_triche = tk.Button(racine, text="revenir en arrière",command= retourner_en_arrière,state=tk.DISABLED)
 bouton_aide = tk.Button(racine, text="aide", command=aide)
 bouton_mode1 = tk.Button(racine)
 bouton_mode2 = tk.Button(racine)
