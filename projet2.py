@@ -9,11 +9,14 @@
 ##########################
 # Import des bibliothèques 
 
+from re import X
 import tkinter as tk
 import random as rd
 import copy
 from tkinter.font import NORMAL
 from tracemalloc import start
+from turtle import left
+from venv import create
 
 
 #########################
@@ -139,7 +142,7 @@ def commencerpartie():
     # Text d'explication
     label1.config(text="Veuillez choisir un mode de jeux")
     bouton_load.destroy()
-    bouton_arrêt = tk.Button(racine, text="Arreter la partie", command=arreter_partie, state=tk.DISABLED)
+    bouton_arrêt = tk.Button(racine, text="Arreter la partie", command=arreter_partie, state=tk.DISABLED, width = 25)
     bouton_arrêt.grid(column=3, row=3)
     # Boutons des deux modes :
     bouton_mode1.config(text="Mode 1 joueur", command= mode1joueur)
@@ -290,7 +293,7 @@ def GrandsPions2():
         print(code)
         codesecret += 1
         if codesecret == 4:
-            label1.config(text="Cliquez sur une couleur pour cacher le code")
+            label1.config(text="Cliquez sur une couleur pour cacher le code et permettre à votre adversaire de jouer")
     elif codesecret == 4:
         codesecret += 1
         for i in range(4): # Pour chaque cercle, on prend leur identifiant, et modifie leur couleur :
@@ -316,6 +319,7 @@ def GrandsPions():
     if colonne == 4:
         if liste[Essai - 1] == code:
             couleur_utilisee.configure(text="VICTOIRE", fg="green")
+            label1.config(text="VICTOIRE!"+"\U0001F600", font=("helvetica", "15"), fg="darkgreen")
             return
         PetitsPions()
         # On réinitialise colonne pour les essais suivants :
@@ -360,6 +364,7 @@ def PetitsPions():
     # On ajoute 1 à Essai pour dire qu'on passe à l'essai suivant
     if Essai == 10:
         couleur_utilisee.configure(text="GAME OVER", fg="black")
+        label1.config(text="PERDU!"+"\U0001F610", font=("helvetica", "15"), fg="darkred")
     Essai += 1
     #canvas.bind('<Button-1>', choisir_couleur)
 
@@ -385,8 +390,8 @@ def sauvegarde():
     mode_sauvegarde2 = modesolo2
     colonne_sauvegarde = colonne
     liste_ppions_sauv = copy.deepcopy(liste_ppions)
-    bouton_charger = tk.Button(racine, text="charger la partie sauvegardée", command=charger_partie)
-    bouton_charger.grid(column=3, row=5)
+    bouton_charger = tk.Button(racine, text="charger la partie sauvegardée", command=charger_partie, width = 25)
+    bouton_charger.grid(column=3, row=6)
 
 def charger_partie():
     """fonction qui permet de charger une partie précédement sauvegardée"""
@@ -477,7 +482,7 @@ def arreter_partie():
     global arrêt
     arrêt = True
     bouton_arrêt.destroy()
-    bouton_relancer = tk.Button(racine, text="relancer une partie", command=commencerpartie)
+    bouton_relancer = tk.Button(racine, text="Relancer une nouvelle partie", command=commencerpartie, width = 25)
     bouton_relancer.grid(column=3, row=3)
 
 
@@ -532,17 +537,23 @@ def aide() :
 
 # Création des widgets :
 racine = tk.Tk()
-canvas = tk.Canvas(racine, height= HAUTEUR, width= LARGEUR, bg="grey")
+canvas = tk.Canvas(racine, height= HAUTEUR, width= LARGEUR, bg="darkgray")
 Titre = racine.title("Mastermind")
-bouton_sauv = tk.Button(racine, text="Sauvegarder partie", command=sauvegarde)
-bouton_load = tk.Button(racine, text="Commencer une nouvelle partie", command= commencerpartie)
-bouton_triche = tk.Button(racine, text="revenir en arrière",command= retourner_en_arrière,state=tk.DISABLED)
-bouton_aide = tk.Button(racine, text="aide", command=aide)
-bouton_mode1 = tk.Button(racine)
-bouton_mode2 = tk.Button(racine)
+bouton_sauv = tk.Button(racine, text="Sauvegarder partie", command=sauvegarde, width = 25)
+bouton_load = tk.Button(racine, text="Commencer une nouvelle partie", command= commencerpartie, width = 25, fg ="green")
+bouton_triche = tk.Button(racine, text="Revenir en arrière",command= retourner_en_arrière,state=tk.DISABLED, width = 25)
+bouton_aide = tk.Button(racine, text="Aide", command=aide, width = 25)
+bouton_mode1 = tk.Button(racine, width = 25)
+bouton_mode2 = tk.Button(racine, width = 25)
 
 # Surface de textes :
-label1 = tk.Label(racine, text="Regles du jeu : .....", font=("helvetica", "10"), bg="grey")
+label1 = tk.Label(racine, text="Bienvenue sur Mastermind ! Le but du jeu est de trouver la combinaison secrete \
+de son adversaire en  10 coups. Pour commencer, il faut décider avec quel mode de jeu vous voulez jouer, \
+c'est à dire si vous jouer contre l'ordinateur ou bien contre un adversaire . Bon Courage !",\
+ font=("helvetica", "10"),wraplength=350,justify="left", bg="darkgray")
+
+
+racine['bg']='gainsboro'
 
 # Indicateur de la couleur actuelle utilisée :
 couleur_utilisee = tk.Label(racine, text="aucune", font=("helvetica", "15"), fg=couleur, bg="grey")
@@ -557,15 +568,18 @@ quadrillage3()
 
 
 # Placement des widgets :
-canvas.grid(column=0, row=0, columnspan=3, rowspan=6)
+canvas.grid(column=0, row=0, columnspan=3, rowspan=7)
 bouton_sauv.grid(column=3, row=2)
 bouton_load.grid(column=3, row=3)
 bouton_triche.grid(column=3, row = 0)
 bouton_aide.grid(column=3, row=1)
 couleur_utilisee.grid(column=5, row=4)
-bouton_mode1.grid(column=4, row=4)
-bouton_mode2.grid(column=3, row=4)
-label1.grid(column=2, row=3)
+bouton_mode1.grid(column=3, row=4)
+bouton_mode2.grid(column=3, row=5)
+label1.grid(column=2, row=4)
+
+
+
 
 # Boucle principale :
 canvas.mainloop()
@@ -599,7 +613,9 @@ canvas.mainloop()
 
 ## choses à faire:
 # revoir la fonction revenir en arrière dans le cas où on charge une partie sauvegardée
-#-faire fontionner les boutons aide 
+# Désactiver les boutons mode si un choisit -- > sinon peut creer des erreurs
+#-Faire fontionner le bouton aide 
+#-les lignes trop longues à reduire
 
 # REMARQUES :
 # -les essais sont les lignes et pas le nombre de grands pions que l'on peut mettre par ligne, 
