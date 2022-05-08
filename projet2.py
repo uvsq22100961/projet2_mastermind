@@ -110,7 +110,7 @@ couleur = "black"
 # Fonctions:
 
 
-def commencerpartie():
+def commencer_partie():
     """fonction qui commence la partie"""
     global liste
     global nombre_max_d_essais
@@ -144,11 +144,13 @@ def commencerpartie():
                 canvas.delete(objet[0])
         # En mode 2 joueurs, on enlève les cercles du code secret s'il y en a :
         if modesolo2 == 0:
-            for i in range(4): # Pour chaque cercle du code, on prend son identifiant, et on le supprime :
+            for i in range(4): 
+                # Pour chaque cercle du code, on prend son identifiant, et on le supprime :
                 if i < codesecret:
                     objet = canvas.find_closest(525 + (i*50), 45)
                     canvas.delete(objet[0])
-        codesecret = 0 # on réinitialise le compteur pour recréer un code en mode 2 joueurs
+        codesecret = 0 
+        # on réinitialise le compteur pour recréer un code en mode 2 joueurs
         # On réinitialise le code :
         code = []
         # On réinitialise les indicateurs d'essais et de la colonne :
@@ -161,11 +163,11 @@ def commencerpartie():
     bouton_arrêt = tk.Button(racine, text="Arreter la partie", command=arreter_partie, state=tk.DISABLED, width = 25)
     bouton_arrêt.grid(column=3, row=3)
     # Boutons des deux modes :
-    bouton_mode1.config(text="Mode 1 joueur", command= mode1joueur, state=NORMAL)
-    bouton_mode2.config(text="Mode 2 joueurs", command= mode2joueurs,state=NORMAL)
+    bouton_mode1.config(text="Mode 1 joueur", command= mode_1_joueur, state=NORMAL)
+    bouton_mode2.config(text="Mode 2 joueurs", command= mode_2_joueurs,state=NORMAL)
 
 
-def mode1joueur():
+def mode_1_joueur():
     """fonction qui demarre le mode 1 joueur"""
     global modesolo
     global modesolo2
@@ -184,11 +186,11 @@ def mode1joueur():
     if relancer == False:
         relancer = True
     label1.config(text="Veuillez choisir une combinaison de pions.")
-    choix_code1() # on appelle la fonction qui choisit un code au hasard
+    choix_code_1() # on appelle la fonction qui choisit un code au hasard
     # clic sur une couleur :
     canvas.bind('<Button-1>', choisir_couleur)
 
-def mode2joueurs():
+def mode_2_joueurs():
     """fonction qui demarre le mode 2 joueurs"""
     global modesolo
     global relancer
@@ -210,7 +212,7 @@ def mode2joueurs():
     canvas.bind('<Button-1>', choisir_couleur)
     
 
-def choix_code1():
+def choix_code_1():
     """fonction qui permet à l'ordinateur de choisir le code en mode 1 joueur """
     global couleur_Gpion
     global code
@@ -231,7 +233,7 @@ def quadrillage() :
         y1 = y1 + 50
     y0, y1 = 100, 150
 
-def quadrillage2() : 
+def quadrillage_2() : 
     """fonction qui crée les ronds où l'utilisateur cliquera pour choisir la couleur de ses pions"""   
     for i in range (8) : 
         a = couleurs_Gpion[i]
@@ -239,7 +241,7 @@ def quadrillage2() :
         canvas.create_oval((10 + (i*50), 20), (60 + (i*50), 70), fill = a)
 
 
-def quadrillage3() : 
+def quadrillage_3() : 
     """fonction qui crée le quadrillage où seront placés les pions secrets en mode 2 joueurs"""   
     for i in range (4) : 
         canvas.create_rectangle((500 + (i*50), 20), (550 + (i*50), 70), fill = "saddlebrown")
@@ -270,18 +272,18 @@ def choisir_couleur(event):
             couleur = "purple"
         couleur_utilisee.configure(text=couleur, fg=couleur)
         #Si il s'agit d'une partie en cours et non sauvegardée, alors on debute un mode de jeu
-        #print("sauvegarder, partie chargee", sauvegarder, partie_chargee)
         if arrêt == False and (sauvegarder == False or partie_chargee == False) :
             mode()
         #Si il s'agit d'une partie sauvegardée, alors on continue avec le meme mode
-        elif sauvegarder == True and arrêt == False: #######################################################
+        elif sauvegarder == True and arrêt == False: 
             commencer_partie_sauvegardee()
             
 
 
 def commencer_partie_sauvegardee():
     """fonctions qui nous permet de placer les pions selon le mode de jeux lorsqu'on debute une partie sauvegardée"""
-    global colonne, Essai, code, liste_ppions, sauvegarder, codesecret, arrêt, retour
+    global colonne, Essai, code, liste_ppions, sauvegarder
+    global codesecret, arrêt, retour
     bouton_arrêt.config(state=NORMAL)
     bouton_triche.config(state=NORMAL)
     print(retour)
@@ -294,12 +296,12 @@ def commencer_partie_sauvegardee():
         code = code_sauvegarde.copy()
         colonne = colonne_sauvegarde 
         Essai = Essai_sauvegarde
-        GrandsPions()
+        Grands_Pions()
     elif mode_sauvegarde == 0 :
         liste_ppions = liste_ppions_sauv.copy()
         liste = liste_sauvegarde.copy()
         codesecret = codesecret_sauvegarde
-        GrandsPions2()   
+        Grands_Pions_2()   
     sauvegarder = False
 
 
@@ -312,12 +314,12 @@ def mode():
         bouton_arrêt.config(state=NORMAL)
         code = code_sauvegarde.copy()
     if modesolo == 1 : 
-        GrandsPions()
+        Grands_Pions()
     if modesolo == 0 :
-        GrandsPions2()
+        Grands_Pions_2()
 
 
-def GrandsPions2():
+def Grands_Pions_2():
     """fonction qui place les pions secret dans le mode de jeu 2 joueurs """
     global code
     global codesecret
@@ -331,17 +333,19 @@ def GrandsPions2():
             label1.config(text="Cliquez sur une couleur pour cacher le code et permettre à votre adversaire de jouer.")
     elif codesecret == 4:
         codesecret += 1
-        for i in range(4): # Pour chaque cercle, on prend leur identifiant, et modifie leur couleur :
+        for i in range(4): 
+            # Pour chaque cercle, on prend leur identifiant, et modifie leur couleur :
                 objet = canvas.find_closest(525 + (i*50), 45)
                 canvas.itemconfigure(objet, fill="black")
         label1.config(text="Veuillez choisir une combinaison de pions.")
-    else: # Quand on a fini de composé le code, les grands pions sont posés sur le jeu
+    else: 
+        # Quand on a fini de composé le code, les grands pions sont posés sur le jeu
         modesolo = 1
-        GrandsPions()
+        Grands_Pions()
 
 
 
-def GrandsPions():
+def Grands_Pions():
     """fonction qui pose les grands pions de la couleur choisie sur le jeu"""
     global colonne
     global Essai, Essai_sauvegarde
@@ -382,7 +386,8 @@ def PetitsPions():
     ## Petits pions blancs :
     for i in range(4):
         nbr_couleur_sup = 0 # indique quand on supprime une couleur de liste2
-        # si la couleur liste[essai-1][i] est dans le code, mais pas à la bonne place, et que cette couleur dans le code
+        # si la couleur liste[essai-1][i] est dans le code, 
+        # mais pas à la bonne place, et que cette couleur dans le code
         # n'est pas déjà utilisée pour les pions rouges (cad qu'elle est dans liste2)... :
         if (liste[Essai - 1][i] in liste2) and (liste[Essai - 1][i] != code[i]):
             # ...on met un pion blanc
@@ -417,7 +422,7 @@ def sauvegarde():
     global mode_sauvegarde2
     global sauvegarder, sauvegarder2
     sauvegarder, sauvegarder2 = True, True
-    liste_sauvegarde = copy.deepcopy(liste) # permet de copier 'en profondeur' la liste
+    liste_sauvegarde = copy.deepcopy(liste) # copie 'en profondeur' la liste
     code_sauvegarde = code.copy()
     codesecret_sauvegarde = codesecret
     Essai_sauvegarde = Essai
@@ -440,7 +445,7 @@ def charger_partie():
     if retour == True:
         retour = False # on réinitialise "retour"
     label1.config(text="Veuillez choisir une combinaison de pions.",font=("helvetica", "10"),fg="black")
-    ### -On supprime d'abord graphiquement l'ancienne partie, si ce n'est pas 
+    # On supprime d'abord graphiquement l'ancienne partie, si ce n'est pas 
     # déjà fait, et on reprend les valeurs sauvegardées
     # On enlève tous les Grands pions :
     for i in range(nombre_max_d_essais):
@@ -457,7 +462,8 @@ def charger_partie():
             canvas.delete(objet[0])
     # En mode 2 joueurs, on enlève les cercles du code secret s'il y en a:
     if modesolo == 0:
-        for i in range(4): # Pour chaque cercle du code, on prend son identifiant, et on le supprime :
+        for i in range(4): 
+        # Pour chaque cercle du code, on prend son identifiant, et on le supprime :
             if i < codesecret:
                 objet = canvas.find_closest(525 + (i*50), 45)
                 canvas.delete(objet[0])
@@ -475,7 +481,6 @@ def charger_partie():
             if liste[i][j] != 0:
                 canvas.create_oval((x0 + j*50 , y0 + 50*i), (x1 + j*50, y1 + 50*i), fill = liste[i][j])               
     ################## (Partie adaptée de la fonction petit pions) Les Petits Pions
-    #print(colonne)
     if colonne != 0: # si le dernier essai sauvegardé ne contient pas 4 grands pions... :
         a = Essai - 2
     else: a = Essai
@@ -496,7 +501,8 @@ def charger_partie():
             ## Petits pions blancs :
             for i in range(4):
                 nbr_couleur_sup = 0 # indique quand on supprime une couleur de liste2
-                    # si la couleur liste[j][i] est dans le code, mais pas à la bonne place, et que cette couleur dans le code
+                    # si la couleur liste[j][i] est dans le code,
+                    #  mais pas à la bonne place, et que cette couleur dans le code
                 # n'est pas déjà utilisée pour les pions rouges (cad qu'elle est dans liste2)... :
                 if (liste[j][i] in liste2) and (liste[j][i] != code[i]):
                     # ...on met un pion blanc
@@ -522,7 +528,7 @@ def arreter_partie():
     global arrêt
     arrêt = True
     bouton_arrêt.destroy()
-    bouton_relancer = tk.Button(racine, text="Relancer une nouvelle partie", command=commencerpartie,width = 25)
+    bouton_relancer = tk.Button(racine, text="Relancer une nouvelle partie", command=commencer_partie,width = 25)
     bouton_relancer.grid(column=3, row=3)
 
 
@@ -604,15 +610,12 @@ def aide() :
         compteur_couleur[max2] = -1
         aider.append(max2) # On ajoute la couleur la plus fréquente à l'aide
         couleur = max2
-        GrandsPions()
+        Grands_Pions()
 
 
 #def aider() : 
 #    """fonction qui propose un code avec les informations des essais précédents, sans donner le code secret""" 
 #    global aide
-#    # note pour continuer la fonction :  aide est une liste vide
-#    # en fonction du nombre d'essai effectué, ajouter 4 couleurs déjà utilisées par l'utilisateur dans la liste et les afficher 
-#    # faire en sorte que l'aide ne soit pas identique au code secret 
 #    for e in liste:
 #        liste_aide = e
 #        for elm in liste_aide:
@@ -642,7 +645,7 @@ racine = tk.Tk()
 canvas = tk.Canvas(racine, height= HAUTEUR, width= LARGEUR, bg="darkgray")
 Titre = racine.title("Mastermind")
 bouton_sauv = tk.Button(racine, text="Sauvegarder partie", command=sauvegarde, width = 25)
-bouton_load = tk.Button(racine, text="Commencer une nouvelle partie", command= commencerpartie, width = 25, fg ="green")
+bouton_load = tk.Button(racine, text="Commencer une nouvelle partie", command= commencer_partie, width = 25, fg ="green")
 bouton_triche = tk.Button(racine, text="Revenir en arrière", command= retourner_en_arrière, state=tk.DISABLED, width = 25)
 bouton_aide = tk.Button(racine, text="Aide", command=aide, width = 25)
 bouton_mode1 = tk.Button(racine, width = 25)
@@ -662,8 +665,8 @@ couleur_utilisee = tk.Label(racine, text="aucune", font=("helvetica", "15"), fg=
 
 
 quadrillage()
-quadrillage2()
-quadrillage3()
+quadrillage_2()
+quadrillage_3()
 
 
 
@@ -715,10 +718,11 @@ canvas.mainloop()
 # -probèmes de la fonction revenir_en_arrière quand on charge une partie sauvegardé une ou plusieurs fois, réglé (T)
 # -les boutons mode sont maintenant desactivés quand c'est nécessaire (T)
 # -bouton aide quasi fini mais il peut encore être amélioré (T -)
+# réduction des lignes (certaines ne peuvent pas être réduites)
 
 ## choses à faire:
 #-revoir bouton aide (d'ailleurs, ne marche pas apès avoir chargé une partie)
-#-les lignes trop longues à reduire
+
 
 # REMARQUES :
 # -les essais sont les lignes et pas le nombre de grands pions que l'on peut mettre par ligne, 
