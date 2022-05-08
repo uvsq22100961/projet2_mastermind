@@ -605,8 +605,35 @@ def aide() :
         aider.append(max2) # On ajoute la couleur la plus fréquente à l'aide
         couleur = max2
         GrandsPions()
-    # faire en sorte que l'aide ne soit pas identique au code secret 
-    
+
+
+#def aider() : 
+#    """fonction qui propose un code avec les informations des essais précédents, sans donner le code secret""" 
+#    global aide
+#    # note pour continuer la fonction :  aide est une liste vide
+#    # en fonction du nombre d'essai effectué, ajouter 4 couleurs déjà utilisées par l'utilisateur dans la liste et les afficher 
+#    # faire en sorte que l'aide ne soit pas identique au code secret 
+#    for e in liste:
+#        liste_aide = e
+#        for elm in liste_aide:
+#            if elm in couleurs_Gpion and elm != 0:
+#                aide.append(elm)
+#    aide = list(set(aide))
+#    aide2 = [elem for elem in couleurs_Gpion if elem not in aide]
+#    if aide2 != []:
+#        label1.configure(text="Vous n'avez pas utiliser les couleurs suivantes :"+", ".join(aide2))
+#    
+#    elif aide2 == []: #Indice sur un pions bien placé
+#        for Essai in range(10):
+#            for i in range(4):
+#                if liste[Essai - 1][i]==code[i]:
+#                    i+=1
+#                    label1.config(text="Le pion à la ligne "+ str(Essai)+" et à la colonne "+ str(i) +" est correct.")
+#                    break
+#    else :
+#        label1.config(text="Essaie encore un petit peu ;)")
+
+
 
 
 
@@ -616,7 +643,7 @@ canvas = tk.Canvas(racine, height= HAUTEUR, width= LARGEUR, bg="darkgray")
 Titre = racine.title("Mastermind")
 bouton_sauv = tk.Button(racine, text="Sauvegarder partie", command=sauvegarde, width = 25)
 bouton_load = tk.Button(racine, text="Commencer une nouvelle partie", command= commencerpartie, width = 25, fg ="green")
-bouton_triche = tk.Button(racine, text="Revenir en arrière",command= retourner_en_arrière,state=tk.DISABLED, width = 25)
+bouton_triche = tk.Button(racine, text="Revenir en arrière", command= retourner_en_arrière, state=tk.DISABLED, width = 25)
 bouton_aide = tk.Button(racine, text="Aide", command=aide, width = 25)
 bouton_mode1 = tk.Button(racine, width = 25)
 bouton_mode2 = tk.Button(racine, width = 25)
@@ -686,11 +713,11 @@ canvas.mainloop()
 # -problèmes de la reprise de ligne, et de l'apparition des petits pions rouges, réglé (T)
 # -les petits pions sont maintenant supprimés quand c'est nécessaire quand on fait un retour en arrière (T)
 # -probèmes de la fonction revenir_en_arrière quand on charge une partie sauvegardé une ou plusieurs fois, réglé (T)
-# -les boutons mode sont maintenant desactivés quand c'est nécessaire
-# -bouton aide quasi fini mais il peut encore être amélioré
+# -les boutons mode sont maintenant desactivés quand c'est nécessaire (T)
+# -bouton aide quasi fini mais il peut encore être amélioré (T -)
 
 ## choses à faire:
-#-revoir bouton aide (d'ailleurs, ne marche pas apès avoir chargé une partie) 
+#-revoir bouton aide (d'ailleurs, ne marche pas apès avoir chargé une partie)
 #-les lignes trop longues à reduire
 
 # REMARQUES :
