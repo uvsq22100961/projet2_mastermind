@@ -140,13 +140,13 @@ def commencerpartie():
         # On réinitialise liste_ppions :
         liste_ppions = [[0] for i in range(nombre_max_d_essais)]
     # Text d'explication
-    label1.config(text="Veuillez choisir un mode de jeux")
+    label1.config(text="Veuillez choisir un mode de jeux.",font=("helvetica", "10"),fg="black")
     bouton_load.destroy()
     bouton_arrêt = tk.Button(racine, text="Arreter la partie", command=arreter_partie, state=tk.DISABLED, width = 25)
     bouton_arrêt.grid(column=3, row=3)
     # Boutons des deux modes :
-    bouton_mode1.config(text="Mode 1 joueur", command= mode1joueur)
-    bouton_mode2.config(text="Mode 2 joueurs", command= mode2joueurs)
+    bouton_mode1.config(text="Mode 1 joueur", command= mode1joueur, state=NORMAL)
+    bouton_mode2.config(text="Mode 2 joueurs", command= mode2joueurs,state=NORMAL)
 
 
 def mode1joueur():
@@ -157,13 +157,14 @@ def mode1joueur():
     global arrêt
     bouton_arrêt.config(state=NORMAL)
     bouton_triche.config(state=NORMAL)
+    bouton_mode2.config(state=tk.DISABLED)
     if arrêt == True:
         arrêt = False
     modesolo = 1 # lorsque le mode 1 joueur est vraie
     modesolo2
     if relancer == False:
         relancer = True
-    label1.config(text="Veuillez choisir une combinaison de pions")
+    label1.config(text="Veuillez choisir une combinaison de pions.")
     choix_code1() # on appelle la fonction qui choisit un code au hasard
     # clic sur une couleur :
     canvas.bind('<Button-1>', choisir_couleur)
@@ -175,13 +176,14 @@ def mode2joueurs():
     global arrêt
     bouton_arrêt.config(state=NORMAL)
     bouton_triche.config(state=NORMAL)
+    bouton_mode1.config(state=tk.DISABLED)
     if arrêt == True:
         arrêt = False
     modesolo = 0 # le mode 1 joueur n'est pas vraie
     modesolo2 = 0
     if relancer == False:
         relancer = True
-    label1.config(text="Veuillez choisir une combinaison de pions secret a l'abris des regards")
+    label1.config(text="Veuillez choisir une combinaison de pions secret a l'abris des regards.")
     # clic sur une couleur :
     canvas.bind('<Button-1>', choisir_couleur)
     
@@ -293,13 +295,13 @@ def GrandsPions2():
         print(code)
         codesecret += 1
         if codesecret == 4:
-            label1.config(text="Cliquez sur une couleur pour cacher le code et permettre à votre adversaire de jouer")
+            label1.config(text="Cliquez sur une couleur pour cacher le code et permettre à votre adversaire de jouer.")
     elif codesecret == 4:
         codesecret += 1
         for i in range(4): # Pour chaque cercle, on prend leur identifiant, et modifie leur couleur :
                 objet = canvas.find_closest(525 + (i*50), 45)
                 canvas.itemconfigure(objet, fill="black")
-        label1.config(text="Veuillez choisir une combinaison de pions")
+        label1.config(text="Veuillez choisir une combinaison de pions.")
     else: # Quand on a fini de composé le code, les grands pions sont posés sur le jeu
         modesolo = 1
         GrandsPions()
@@ -390,7 +392,7 @@ def sauvegarde():
     mode_sauvegarde2 = modesolo2
     colonne_sauvegarde = colonne
     liste_ppions_sauv = copy.deepcopy(liste_ppions)
-    bouton_charger = tk.Button(racine, text="charger la partie sauvegardée", command=charger_partie, width = 25)
+    bouton_charger = tk.Button(racine, text="Charger la partie sauvegardée", command=charger_partie, width = 25)
     bouton_charger.grid(column=3, row=6)
 
 def charger_partie():
@@ -400,7 +402,7 @@ def charger_partie():
     global arrêt
     global partie_chargee
     partie_chargee = True # on indique qu'on viens de charger la partie sauvegardée
-    label1.config(text="Veuillez choisir une combinaison de pions")
+    label1.config(text="Veuillez choisir une combinaison de pions.",font=("helvetica", "10"),fg="black")
     ### -On supprime d'abord graphiquement l'ancienne partie, si ce n'est pas déjà fait, et on reprend les valeurs sauvegardées
     # On enlève tous les Grands pions :
     for i in range(nombre_max_d_essais):
@@ -482,7 +484,7 @@ def arreter_partie():
     global arrêt
     arrêt = True
     bouton_arrêt.destroy()
-    bouton_relancer = tk.Button(racine, text="Relancer une nouvelle partie", command=commencerpartie, width = 25)
+    bouton_relancer = tk.Button(racine, text="Relancer une nouvelle partie", command=commencerpartie,width = 25)
     bouton_relancer.grid(column=3, row=3)
 
 
@@ -490,6 +492,7 @@ def retourner_en_arrière():
     """Fonction qui permet de revenir en arrière"""
     global Essai, colonne, liste_ppions
     # on commence d'abord par supprimer les petits pions quand c'est nécessaire :
+    label1.config(text="")
     if partie_chargee == True:
         Essai += 1
     if colonne == 0: # càd quand on enlève le dernier pion d'un essai (--> colonne = 0)
@@ -613,7 +616,6 @@ canvas.mainloop()
 
 ## choses à faire:
 # revoir la fonction revenir en arrière dans le cas où on charge une partie sauvegardée
-# Désactiver les boutons mode si un choisit -- > sinon peut creer des erreurs
 #-Faire fontionner le bouton aide 
 #-les lignes trop longues à reduire
 
