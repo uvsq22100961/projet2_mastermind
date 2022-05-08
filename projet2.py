@@ -580,9 +580,18 @@ def aider() :
                 aide.append(elm)
     aide = list(set(aide))
     aide2 = [elem for elem in couleurs_Gpion if elem not in aide]
-    if aide != []:
-    label1.configure(text="Vous n'avez pas utiliser les couleurs suivantes: "+", ".join(aide2))
-    if aide == []:
+    if aide2 != []:
+        label1.configure(text="Vous n'avez pas utiliser les couleurs suivantes :"+", ".join(aide2))
+    
+    elif aide2 == []: #Indice sur un pions bien placé
+        for Essai in range(10):
+            for i in range(4):
+                if liste[Essai - 1][i]==code[i]:
+                    i+=1
+                    label1.config(text="Le pion à la ligne "+ str(Essai)+" et à la colonne "+ str(i) +" est correct.")
+                    break
+    else :
+        label1.config(text="Essaie encore un petit peu ;)")
 
 
 
@@ -665,9 +674,9 @@ canvas.mainloop()
 # -les petits pions sont maintenant supprimés quand c'est nécessaire quand on fait un retour en arrière (T)
 # -probèmes de la fonction revenir_en_arrière quand on charge une partie sauvegardé une ou plusieurs fois, réglé (T)
 # -les boutons mode sont maintenant desactivés quand c'est nécessaire
+# -Debut fonction aide 
 
 ## choses à faire:
-#-Faire fontionner le bouton aide 
 #-les lignes trop longues à reduire
 
 # REMARQUES :
