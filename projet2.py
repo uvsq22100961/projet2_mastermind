@@ -45,7 +45,11 @@ mode_sauvegarde2  = 0 # n'est pas modifiée dans la fonction "GrandPions2" -->
 # utile dans la fonction "commencerpartie"
 
 # liste pour l'aide : 
-aide = []
+aider = []
+liste_couleur = [] # liste des couleurs probable
+mauvaises_couleurs = [] # liste avec les couleurs à ne pas prendre
+compteur_couleur = {"green" : 0, "red" : 0, "yellow" : 0, "blue" : 0,\
+     "white" : 0, "pink" : 0, "orange" : 0, "purple" : 0} # Dictionnaire
 
 liste_ppions = [[0] for i in range(nombre_max_d_essais)]
 
@@ -283,7 +287,6 @@ def commencer_partie_sauvegardee():
     print(retour)
     if retour == True:
         code = code_sauvegarde.copy()
-        print(code, "a")
         mode()
     elif mode_sauvegarde == 1 :
         liste_ppions = liste_ppions_sauv.copy()
@@ -368,7 +371,6 @@ def PetitsPions():
     # on utilise une deuxième liste pour les pions blancs :
     liste2 = list(code)
     ## Petits pions rouges :
-    print(code, "b")
     for i in range(4):
         if liste[Essai - 1][i] == code[i]:
             canvas.create_oval((320 + nombre*20, y0 + 50*(Essai - 1)), (335 + nombre*20, y0 + 50*(Essai - 1) + 15), fill="red")
@@ -533,7 +535,6 @@ def retourner_en_arrière():
     if partie_chargee == True:
         Essai += 1
     if colonne == 0: # càd quand on enlève le dernier pion d'un essai (--> colonne = 0)
-        print("ici", Essai)
         for i in range(liste_ppions[Essai - 2][0]):
             objet = canvas.find_closest(350, 120 + ((Essai - 2)*50))
             canvas.delete(objet[0])
@@ -569,9 +570,41 @@ def retourner_en_arrière():
 
 def aide() : 
     """fonction qui propose un code avec les informations des essais précédents, sans donner le code secret"""
-    global aide 
-    # note pour continuer la fonction :  aide est une liste vide
-    # en fonction du nombre d'essai effectué, ajouter 4 couleurs déjà utilisées par l'utilisateur dans la liste et les afficher 
+    global aider, liste_couleur, mauvaises_couleurs, compteur_couleur, couleur
+    if colonne != 0:
+        return # L'aide fournie un code entier, donc colonne doit être nul
+    for i in range(Essai - 1): # On regarde dans chaque essai
+        if liste_ppions[i][0] == 0:
+            # Si les couleurs ne sont pas dans le code, on les met dans 
+            # "mauvaises_couleurs" :
+            mauvaises_couleurs.append(liste[Essai - 1][j] for j in range(4))
+        else :
+            for j in range(4):
+                if liste[i][j] not in mauvaises_couleurs:
+                    liste_couleur.append(liste[i][j])
+    # But :
+    # Plus une couleur apparait avec des petits pions, plus elle a de chance
+    # d'être proposé dans le code :
+    for couleur2 in couleurs_Gpion:
+        # On compte le nombre de fois que les couleurs apparaissent :
+        nombre = liste_couleur.count(couleur2)
+        # On rassemble ces nombres dans un dictionnaire :
+        compteur_couleur[couleur2] = nombre
+    print(compteur_couleur)
+    for i in range(4): # On veut 4 couleurs
+        max = 0 # Nombre d'apparition le plus grand
+        max2 = 0 # Couleur qui apparait le plus
+        for nombre in compteur_couleur.items(): # renvoi une couleur et son
+            # nombre d'apparition
+            print(nombre)
+            if nombre[1] > max: # On cherche le nombre le plus grand
+                max2 = nombre[0]
+                max = nombre[1]
+        print(max2, max)
+        compteur_couleur[max2] = -1
+        aider.append(max2) # On ajoute la couleur la plus fréquente à l'aide
+        couleur = max2
+        GrandsPions()
     # faire en sorte que l'aide ne soit pas identique au code secret 
     
 
@@ -654,9 +687,10 @@ canvas.mainloop()
 # -les petits pions sont maintenant supprimés quand c'est nécessaire quand on fait un retour en arrière (T)
 # -probèmes de la fonction revenir_en_arrière quand on charge une partie sauvegardé une ou plusieurs fois, réglé (T)
 # -les boutons mode sont maintenant desactivés quand c'est nécessaire
+# -bouton aide quasi fini mais il peut encore être amélioré
 
 ## choses à faire:
-#-Faire fontionner le bouton aide 
+#-revoir bouton aide (d'ailleurs, ne marche pas apès avoir chargé une partie) 
 #-les lignes trop longues à reduire
 
 # REMARQUES :
