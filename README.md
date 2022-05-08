@@ -16,54 +16,82 @@
 
 ### But du jeu :  
 
-le but du MASTERMIND est de trouver un code secret, choisi par un utilisateur ou l'ordinateur, tout en prenant en compte les informations données sur les pions. 
-Le code est composé de quatre pions colorés, chaque couleur peut apparaitre plusieurs fois dans le code. Des cercles rouges et blancs indiquent à chaque essai le nombre de pion bien ou mal placés.
+Le but du MASTERMIND est de trouver un code secret, choisi par un utilisateur ou l'ordinateur, tout en prenant en compte les informations données sur les pions. 
+Le code est composé de quatre pions colorés, chaque couleur peut apparaître plusieurs fois dans le code. Des cercles rouges et blancs indiquent à chaque essai le nombre de pion bien ou mal placés.
 
+Notre MASTERMIND peut se jouer seul ou à deux joueurs, et possède trois fonctionnalités non présentes dans le jeu original sur plateau.  
 
-- un cercle rouge indique un pion bien placé 
-- un cercle blanc indique un cercle mal placé 
+#### Les pions 
 
-un pion bien placé est un pion de la bonne couleur et à la bonne place 
+- Un cercle rouge indique un pion bien placé 
+- Un cercle blanc indique un cercle mal placé 
 
-un pion mal placé est un pion ayant une couleur apparaîssant dans le code secret mais pas à la bonne place 
+Un pion bien placé est un pion de la bonne couleur et à la bonne place 
+
+Un pion mal placé est un pion ayant une couleur apparaîssant dans le code secret mais pas à la bonne place 
 
 
 ![image](https://user-images.githubusercontent.com/98943826/167257812-9edde2d3-d23a-43f7-ae2d-44fd653592bc.png)
 
+Dans l'exemple ci-dessus, à la 3e ligne il y a 1 pion bien placé et 2 pions mal placés.
 
-
-### Dans un premier temps, on choisit le mode de jeu : 
+### Les modes de jeu : 
 
 ![image](https://user-images.githubusercontent.com/98943826/167257691-501890aa-bfb6-41af-8b35-b9535c07fb9b.png)
-image () : choix du mode de jeu 
+
+Image : Choix du mode de jeu 
 
 
-#### mode 1 joueur 
+#### Mode 1 joueur 
+
+Déroulement du jeu : après avoir choisi le mode 1 joueur l'ordinateur génère automatiquement un code secret. le joueur à ensuite 10 essais pour trouver ce code secret. 
 
 
+#### Mode 2 joueur 
 
-#### mode 2 joueur 
-
-Déroulement du jeu : le joueur 1 choisi un code en cliquant sur les cercles de couleurs en haut de la fenêtre. Une couleur peut apparaître plusieurs fois dans le code secret. ensuite, le joueur n°2 a 10 essai pour décoder le code choisi par le joueur n°1. 
+Déroulement du jeu : le joueur 1 choisi un code en cliquant sur les cercles de couleurs en haut de la fenêtre. Une couleur peut apparaître plusieurs fois dans le code secret. Ensuite, le joueur n°2 a 10 essai pour décoder le code choisi par le joueur n°1. 
 
 ![choix code 2 joueurs](https://user-images.githubusercontent.com/98943826/167257388-299f361e-73aa-4987-a767-16dfe0738be5.png)
 ![code caché](https://user-images.githubusercontent.com/98943826/167257321-42fa62db-9874-4598-848a-1d9878b5a26a.png)
 
-image () : le code est caché, le joueur n°2 ne le vois pas
-image () : choix du code par le joueur n°1 
+A gauche : le code choisi par le premier joueur, à droite : le code est caché pour que le joueur n°2 ne le voit pas. 
+ 
+
+## Autres fonctionalités 
+
+- Revenir en arrière 
+
+Le bouton "revenir en arrière" permet au joueur d'éffacer le/les dernier(s) pions. Ce bouton est donc un bouton de triche car le joueur aura vu les cercles lui indiquant le nombre de pions bien/mal placés. 
+
+![image](https://user-images.githubusercontent.com/98943826/167311126-1d493560-8c4a-47f7-ba34-826fcafe5b80.png)
+
+Image illustrant un joueur qui vient de cliquer sur "revenir en arrière"
+
+
+- Aide 
+
+Le bouton "aide" permet d'afficher un message qui aiderai le joueur à choisir ses prochains pions. 
+
+Ce message donne des informations sur les couleurs que l'on a pas utilisé et qui pourrait être dans le code secret, ou nous dit quel pion que nous avons placé est bien à sa place. 
+
+![image](https://user-images.githubusercontent.com/98943826/167312331-a9cf2a3c-fa10-4192-825c-400e219d40cb.png)
+
+Image : message d'aide 
+
+
+- Sauvegarder / Charger une partie 
+
+Les boutons "sauvegarder partie" et "charger la partie sauvegardée" permette de sauvegarder une partie en cours qui pourra être chargée plus tard. 
+
+
+## Fin de partie 
+
+Lorsque au bout de 10 essais le joueur qui décode n'a pas trouvé le code, la partie s'arrête et un message "perdu" est affiché. Mais, si il a réussi à trouver le code, un message "victoire" est affiché. les images ci-dessous illustrent les deux cas. 
+
+![image](https://user-images.githubusercontent.com/98943826/167312373-c50fc0b8-e546-468c-bcc7-4014712e0d94.png)
+![image](https://user-images.githubusercontent.com/98943826/167312380-e4a43b3b-59b4-4383-a99a-aeee5e9c8281.png)
 
 
 
 
-
-
-## autres fonctionalités 
-
-- revenir en arrière 
-- aide 
-- sauvegarder / charger une partie 
-
-(décrire chaque fonctionnalité)
-
-
-
+A vous de jouer ! 
