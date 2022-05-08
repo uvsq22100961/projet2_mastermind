@@ -567,13 +567,24 @@ def retourner_en_arrière():
     print("colonne:", colonne)
 
 
-def aide() : 
-    """fonction qui propose un code avec les informations des essais précédents, sans donner le code secret"""
-    global aide 
+def aider() : 
+    """fonction qui propose un code avec les informations des essais précédents, sans donner le code secret""" 
+    global aide
     # note pour continuer la fonction :  aide est une liste vide
     # en fonction du nombre d'essai effectué, ajouter 4 couleurs déjà utilisées par l'utilisateur dans la liste et les afficher 
     # faire en sorte que l'aide ne soit pas identique au code secret 
-    
+    for e in liste:
+        liste_aide = e
+        for elm in liste_aide:
+            if elm in couleurs_Gpion and elm != 0:
+                aide.append(elm)
+    aide = list(set(aide))
+    aide2 = [elem for elem in couleurs_Gpion if elem not in aide]
+    if aide != []:
+    label1.configure(text="Vous n'avez pas utiliser les couleurs suivantes: "+", ".join(aide2))
+    if aide == []:
+
+
 
 
 
@@ -584,7 +595,7 @@ Titre = racine.title("Mastermind")
 bouton_sauv = tk.Button(racine, text="Sauvegarder partie", command=sauvegarde, width = 25)
 bouton_load = tk.Button(racine, text="Commencer une nouvelle partie", command= commencerpartie, width = 25, fg ="green")
 bouton_triche = tk.Button(racine, text="Revenir en arrière",command= retourner_en_arrière,state=tk.DISABLED, width = 25)
-bouton_aide = tk.Button(racine, text="Aide", command=aide, width = 25)
+bouton_aide = tk.Button(racine, text="Aide", command=aider, width = 25)
 bouton_mode1 = tk.Button(racine, width = 25)
 bouton_mode2 = tk.Button(racine, width = 25)
 
