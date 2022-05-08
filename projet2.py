@@ -249,7 +249,7 @@ def choisir_couleur(event):
         if arrêt == False and (sauvegarder == False or partie_chargee == False) :
             mode()
         #Si il s'agit d'une partie sauvegardée, alors on continue avec le meme mode
-        elif sauvegarder == True and arrêt == False:
+        elif sauvegarder == True and arrêt == False: #######################################################
             commencer_partie_sauvegardee()
             
 
@@ -488,7 +488,17 @@ def arreter_partie():
 
 def retourner_en_arrière():
     """Fonction qui permet de revenir en arrière"""
-    global Essai, colonne
+    global Essai, colonne, liste_ppions
+    # on commence d'abord par supprimer les petits pions quand c'est nécessaire :
+    if partie_chargee == True:
+        Essai += 1
+    if colonne == 0: # càd quand on enlève le dernier pion d'un essai (--> colonne = 0)
+        print("ici", Essai)
+        for i in range(liste_ppions[Essai - 2][0]):
+            objet = canvas.find_closest(350, 120 + ((Essai - 2)*50))
+            canvas.delete(objet[0])
+        # puis on réinitialise la liste des petits pions:
+        liste_ppions = [[0] for i in range(nombre_max_d_essais)]
     rev=[]
     for e in reversed(liste): # on lit la liste dans l'ordre inverse,
         # dans un premier temps, on cherche la derniere liste dans la liste qui contient des elements
@@ -599,10 +609,12 @@ canvas.mainloop()
 # -problème pour charger une partie quand on joue une nouvelle partie avant de la charher, réglé (T)
 # début de la fonction aide
 # -problèmes de la reprise de ligne, et de l'apparition des petits pions rouges, réglé (T)
+# -les petits pions sont maintenant supprimés quand c'est nécessaire quand on fait un retour en arrière (T)
 
 ## choses à faire:
+# revoir la fonction revenir en arrière dans le cas où on charge une partie sauvegardée
 # Désactiver les boutons mode si un choisit -- > sinon peut creer des erreurs
-#-Faire fontionner les boutons aide 
+#-Faire fontionner le bouton aide 
 #-les lignes trop longues à reduire
 
 # REMARQUES :
