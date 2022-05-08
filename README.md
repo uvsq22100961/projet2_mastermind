@@ -70,13 +70,8 @@ Image illustrant un joueur qui vient de cliquer sur "revenir en arrière"
 
 - Aide 
 
-Le bouton "aide" permet d'afficher un message qui aiderai le joueur à choisir ses prochains pions. 
+Le bouton "aide" propose un code possible, en prenant en compte les indications données par les cercles rouges et blancs, sans donner le code secret. 
 
-Ce message donne des informations sur les couleurs que l'on a pas utilisé et qui pourrait être dans le code secret, ou nous dit quel pion que nous avons placé est bien à sa place. 
-
-![image](https://user-images.githubusercontent.com/98943826/167312331-a9cf2a3c-fa10-4192-825c-400e219d40cb.png)
-
-Image : message d'aide 
 
 
 - Sauvegarder / Charger une partie 
