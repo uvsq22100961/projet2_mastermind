@@ -41,7 +41,8 @@ colonne_sauvegarde = 0
 liste_ppions_sauv = []
 codesecret_sauvegarde = 0
 mode_sauvegarde = 0
-mode_sauvegarde2  = 0 # n'est pas modifiée dans la fonction "GrandPions2" --> utile dans la fonction "commencerpartie"
+mode_sauvegarde2  = 0 # n'est pas modifiée dans la fonction "GrandPions2" --> 
+# utile dans la fonction "commencerpartie"
 
 # liste pour l'aide : 
 aide = []
@@ -68,19 +69,26 @@ code = []
 LARGEUR = 800
 HAUTEUR = 700
 
-# Indicateur qui indique si on est en train de relancer une partie quand on est dans la fonction commencerpartie (permet
-# d'enlever tous les pions du jeu, et de tout réinitialiser)
+# Indicateur qui indique si on est en train de relancer une partie quand on 
+# est dans la fonction commencerpartie (permet d'enlever tous les pions du 
+# jeu, et de tout réinitialiser)
 relancer = False
 
 # Indicateur qui indique si le jeu est arrêté (empêche de poser des pions) :
 arrêt = False
 
-# Indicateur qui indique si la partie à laquelle on joue est une partie sauvegardée :
+# Indicateur qui indique si la partie à laquelle on joue est une partie 
+# sauvegardée :
 sauvegarder = False
+sauvegarder2 = False # nécessaire dans mode()
 
-# Indicateur qui indique si, quand on a sauvegardé une partie, on a déjà chargé cette partie (utilisé dans
-#  choisir_couleur):
+# Indicateur qui indique si, quand on a sauvegardé une partie, on a déjà 
+# chargé cette partie (utilisé dans choisir_couleur):
 partie_chargee = False
+
+# Indicateur qui indique si on a fait un retour en arrière (utiisé dans la
+# fonction commencer_partie_sauvegardée)
+retour = False
 
 # Boutons
 bouton_arrêt = 0 # bouton pour arrêter la partie en cours
@@ -109,9 +117,13 @@ def commencerpartie():
     global code
     global modesolo2
     global Essai
-    global colonne
-    global liste_ppions
+    global colonne, liste_ppions, retour
     if relancer == True:
+        # On change l'état des boutons modes :
+        bouton_mode1.config(state=NORMAL)
+        bouton_mode2.config(state=NORMAL)
+        if retour == True:
+            retour = False # on réinitialise "retour"
         bouton_relancer.destroy()
         # On enlève tous les Grands pions :
         for i in range(nombre_max_d_essais):
@@ -155,6 +167,9 @@ def mode1joueur():
     global modesolo2
     global relancer
     global arrêt
+    # On rend les deux boutons modes non utililsables :
+    bouton_mode1.config(state=tk.DISABLED)
+    bouton_mode2.config(state=tk.DISABLED)
     bouton_arrêt.config(state=NORMAL)
     bouton_triche.config(state=NORMAL)
     if arrêt == True:
@@ -173,6 +188,9 @@ def mode2joueurs():
     global modesolo
     global relancer
     global arrêt
+    # On rend les deux boutons modes non utililsables :
+    bouton_mode2.config(state=tk.DISABLED)
+    bouton_mode1.config(state=tk.DISABLED)
     bouton_arrêt.config(state=NORMAL)
     bouton_triche.config(state=NORMAL)
     if arrêt == True:
@@ -246,6 +264,7 @@ def choisir_couleur(event):
             couleur = "purple"
         couleur_utilisee.configure(text=couleur, fg=couleur)
         #Si il s'agit d'une partie en cours et non sauvegardée, alors on debute un mode de jeu
+        #print("sauvegarder, partie chargee", sauvegarder, partie_chargee)
         if arrêt == False and (sauvegarder == False or partie_chargee == False) :
             mode()
         #Si il s'agit d'une partie sauvegardée, alors on continue avec le meme mode
@@ -256,17 +275,24 @@ def choisir_couleur(event):
 
 def commencer_partie_sauvegardee():
     """fonctions qui nous permet de placer les pions selon le mode de jeux lorsqu'on debute une partie sauvegardée"""
-    global colonne, Essai, code, liste_ppions, sauvegarder, codesecret, arrêt
+    global colonne, Essai, code, liste_ppions, sauvegarder, codesecret, arrêt, retour
     bouton_arrêt.config(state=NORMAL)
     bouton_triche.config(state=NORMAL)
-    liste_ppions = liste_ppions_sauv.copy()
-    liste = liste_sauvegarde.copy()
-    if mode_sauvegarde == 1 :
+    print(retour)
+    if retour == True:
+        code = code_sauvegarde.copy()
+        print(code, "a")
+        mode()
+    elif mode_sauvegarde == 1 :
+        liste_ppions = liste_ppions_sauv.copy()
+        liste = liste_sauvegarde.copy()
         code = code_sauvegarde.copy()
         colonne = colonne_sauvegarde 
         Essai = Essai_sauvegarde
         GrandsPions()
-    if mode_sauvegarde == 0 :
+    elif mode_sauvegarde == 0 :
+        liste_ppions = liste_ppions_sauv.copy()
+        liste = liste_sauvegarde.copy()
         codesecret = codesecret_sauvegarde
         GrandsPions2()   
     sauvegarder = False
@@ -275,7 +301,11 @@ def commencer_partie_sauvegardee():
 
 def mode():
     """fonctions qui nous permet de placer les pions selon le mode de jeux"""
+    global retour, code
     # En fonction du mode, les pions sont posés dans le code secret ou sur le jeu :
+    if retour == True and sauvegarder2 == True:
+        bouton_arrêt.config(state=NORMAL)
+        code = code_sauvegarde.copy()
     if modesolo == 1 : 
         GrandsPions()
     if modesolo == 0 :
@@ -336,6 +366,7 @@ def PetitsPions():
     # on utilise une deuxième liste pour les pions blancs :
     liste2 = list(code)
     ## Petits pions rouges :
+    print(code, "b")
     for i in range(4):
         if liste[Essai - 1][i] == code[i]:
             canvas.create_oval((320 + nombre*20, y0 + 50*(Essai - 1)), (335 + nombre*20, y0 + 50*(Essai - 1) + 15), fill="red")
@@ -380,8 +411,8 @@ def sauvegarde():
     global liste_ppions_sauv
     global mode_sauvegarde
     global mode_sauvegarde2
-    global sauvegarder
-    sauvegarder = True
+    global sauvegarder, sauvegarder2
+    sauvegarder, sauvegarder2 = True, True
     liste_sauvegarde = copy.deepcopy(liste) # permet de copier 'en profondeur' la liste
     code_sauvegarde = code.copy()
     codesecret_sauvegarde = codesecret
@@ -398,10 +429,15 @@ def charger_partie():
     global liste
     global liste_ppions
     global arrêt
-    global partie_chargee
+    global partie_chargee, retour
+    bouton_mode1.config(state=tk.DISABLED)
+    bouton_mode2.config(state=tk.DISABLED)
     partie_chargee = True # on indique qu'on viens de charger la partie sauvegardée
+    if retour == True:
+        retour = False # on réinitialise "retour"
     label1.config(text="Veuillez choisir une combinaison de pions")
-    ### -On supprime d'abord graphiquement l'ancienne partie, si ce n'est pas déjà fait, et on reprend les valeurs sauvegardées
+    ### -On supprime d'abord graphiquement l'ancienne partie, si ce n'est pas 
+    # déjà fait, et on reprend les valeurs sauvegardées
     # On enlève tous les Grands pions :
     for i in range(nombre_max_d_essais):
         for j in range(4):
@@ -488,7 +524,8 @@ def arreter_partie():
 
 def retourner_en_arrière():
     """Fonction qui permet de revenir en arrière"""
-    global Essai, colonne, liste_ppions
+    global Essai, colonne, liste_ppions, retour
+    retour = True # On indique qu'on vient de revenir en arrière
     # on commence d'abord par supprimer les petits pions quand c'est nécessaire :
     if partie_chargee == True:
         Essai += 1
@@ -501,7 +538,8 @@ def retourner_en_arrière():
         liste_ppions = [[0] for i in range(nombre_max_d_essais)]
     rev=[]
     for e in reversed(liste): # on lit la liste dans l'ordre inverse,
-        # dans un premier temps, on cherche la derniere liste dans la liste qui contient des elements
+        # Dans un premier temps, on cherche la derniere liste dans la liste 
+        # qui contient des elements
         if e != [0, 0, 0, 0] : 
             rev = e
             Essai = liste.index(e)
@@ -523,6 +561,7 @@ def retourner_en_arrière():
                     Essai +=1
                     break
             break
+    print("colonne:", colonne)
 
 
 def aide() : 
@@ -610,10 +649,10 @@ canvas.mainloop()
 # début de la fonction aide
 # -problèmes de la reprise de ligne, et de l'apparition des petits pions rouges, réglé (T)
 # -les petits pions sont maintenant supprimés quand c'est nécessaire quand on fait un retour en arrière (T)
+# -probèmes de la fonction revenir_en_arrière quand on charge une partie sauvegardé une ou plusieurs fois, réglé (T)
+# -les boutons mode sont maintenant desactivés quand c'est nécessaire
 
 ## choses à faire:
-# revoir la fonction revenir en arrière dans le cas où on charge une partie sauvegardée
-# Désactiver les boutons mode si un choisit -- > sinon peut creer des erreurs
 #-Faire fontionner le bouton aide 
 #-les lignes trop longues à reduire
 
