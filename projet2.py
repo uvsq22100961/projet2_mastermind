@@ -657,11 +657,11 @@ de son adversaire en  10 coups. Pour commencer, il faut décider avec quel mode 
 c'est à dire si vous jouer contre l'ordinateur ou bien contre un adversaire . Bon Courage !",\
  font=("helvetica", "10"),wraplength=350,justify="left", bg="darkgray")
 
-
+# Couleur de la fenetre principale :
 racine['bg']='gainsboro'
 
 # Indicateur de la couleur actuelle utilisée :
-couleur_utilisee = tk.Label(racine, text="aucune", font=("helvetica", "15"), fg=couleur, bg="grey")
+couleur_utilisee = tk.Label(racine, text=".", font=("helvetica", "10"), fg=couleur, bg="gainsboro")
 
 
 quadrillage()
