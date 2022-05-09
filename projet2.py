@@ -121,13 +121,15 @@ def commencer_partie():
     global code
     global modesolo2
     global Essai
-    global colonne, liste_ppions, retour
+    global colonne, liste_ppions, retour, partie_chargee
     if relancer == True:
         # On change l'état des boutons modes :
         bouton_mode1.config(state=NORMAL)
         bouton_mode2.config(state=NORMAL)
         if retour == True:
             retour = False # on réinitialise "retour"
+        if partie_chargee == True:
+            partie_chargee = False
         bouton_relancer.destroy()
         # On enlève tous les Grands pions :
         for i in range(nombre_max_d_essais):
@@ -286,7 +288,6 @@ def commencer_partie_sauvegardee():
     global codesecret, arrêt, retour
     bouton_arrêt.config(state=NORMAL)
     bouton_triche.config(state=NORMAL)
-    print(retour)
     if retour == True:
         code = code_sauvegarde.copy()
         mode()
@@ -583,7 +584,8 @@ def aide() :
         if liste_ppions[i][0] == 0:
             # Si les couleurs ne sont pas dans le code, on les met dans 
             # "mauvaises_couleurs" :
-            mauvaises_couleurs.append(liste[Essai - 1][j] for j in range(4))
+            for j in range(4):
+                mauvaises_couleurs.append(liste[i][j])
         else :
             for j in range(4):
                 if liste[i][j] not in mauvaises_couleurs:
@@ -598,7 +600,10 @@ def aide() :
         compteur_couleur[couleur2] = nombre
     print(compteur_couleur)
     for i in range(4): # On veut 4 couleurs
-        max = 0 # Nombre d'apparition le plus grand
+        max = -1 # Nombre d'apparition le plus grand
+        # On met -1 car il faudra trouver un nombre d'apparition superieur
+        # strict à "max", et il faut pouvoir accéder à ceux qui apparaissent
+        # 0 fois pour proposer une nouvelle couleur
         max2 = 0 # Couleur qui apparait le plus
         for nombre in compteur_couleur.items(): # renvoi une couleur et son
             # nombre d'apparition
@@ -607,10 +612,18 @@ def aide() :
                 max2 = nombre[0]
                 max = nombre[1]
         print(max2, max)
-        compteur_couleur[max2] = -1
+        compteur_couleur[max2] = -1 # 0n met -1 pour que la couleur ne soit 
+        # pas mise 4 fois d'affilé
         aider.append(max2) # On ajoute la couleur la plus fréquente à l'aide
         couleur = max2
         Grands_Pions()
+    # Enfin on réinitialise les nombres d'apparition, pour ne pas fausser
+    # les statistiques lors du prochain appel de la fonction :
+    for couleur2 in compteur_couleur: # Pour chaque couleurs
+        compteur_couleur[couleur2] = 0 # on réinitialise sa valeur associée
+    # et on réinitialise la liste de couleurs :
+    liste_couleur = []
+
 
 
 #def aider() : 
@@ -717,8 +730,12 @@ canvas.mainloop()
 # -les petits pions sont maintenant supprimés quand c'est nécessaire quand on fait un retour en arrière (T)
 # -probèmes de la fonction revenir_en_arrière quand on charge une partie sauvegardé une ou plusieurs fois, réglé (T)
 # -les boutons mode sont maintenant desactivés quand c'est nécessaire (T)
-# -bouton aide quasi fini mais il peut encore être amélioré (T -)
+# -bouton aide quasi fini mais il peut encore être amélioré (T - M)
 # réduction des lignes (certaines ne peuvent pas être réduites)
+# -problèmes de "aide" quand on a mis moins de 4 couleurs différentes, et quand on l'appelle plusieurs fois, réglés (T)
+# -aide : les couleurs qui ne sont pas présentes dans le code par évidence, ne sont maintenant plus proposées (T)
+# -problème de reprise de ligne après un chargement d'une partie, une sauvegarde d'une nouvelle partie, et la relance 
+# d'une 3eme partie, réglé (T)
 
 ## choses à faire:
 #-revoir bouton aide (d'ailleurs, ne marche pas apès avoir chargé une partie)
