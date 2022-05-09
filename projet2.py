@@ -600,6 +600,7 @@ def aide() :
         compteur_couleur[couleur2] = nombre
     print(compteur_couleur)
     for i in range(4): # On veut 4 couleurs
+        a = -1
         max = -1 # Nombre d'apparition le plus grand
         # On met -1 car il faudra trouver un nombre d'apparition superieur
         # strict à "max", et il faut pouvoir accéder à ceux qui apparaissent
@@ -607,14 +608,23 @@ def aide() :
         max2 = 0 # Couleur qui apparait le plus
         for nombre in compteur_couleur.items(): # renvoi une couleur et son
             # nombre d'apparition
+            a += 1
             print(nombre)
             if nombre[1] > max: # On cherche le nombre le plus grand
                 max2 = nombre[0]
                 max = nombre[1]
+                b = a # b est l'identifiant de max2 dans couleurs_Gpion
         print(max2, max)
         compteur_couleur[max2] = -1 # 0n met -1 pour que la couleur ne soit 
         # pas mise 4 fois d'affilé
         aider.append(max2) # On ajoute la couleur la plus fréquente à l'aide
+        if len(aider) == 4:
+            if aider == code: # si l'aide est le code, on change la dernière
+                # couleur, pour ne pas donner le code
+                max2 = couleurs_Gpion[b - 1]
+                # b-1 est l'identifiant de la couleur qui vient avant 
+                # l'ancienne couleur max2 dans la liste des couleurs; si b = 0
+                # max2 sera alors la dernière couleur de la liste
         couleur = max2
         Grands_Pions()
     # Enfin on réinitialise les nombres d'apparition, pour ne pas fausser
@@ -736,6 +746,7 @@ canvas.mainloop()
 # -aide : les couleurs qui ne sont pas présentes dans le code par évidence, ne sont maintenant plus proposées (T)
 # -problème de reprise de ligne après un chargement d'une partie, une sauvegarde d'une nouvelle partie, et la relance 
 # d'une 3eme partie, réglé (T)
+# -l'aide ne peut plus proposer le code (T)
 
 ## choses à faire:
 #-revoir bouton aide (d'ailleurs, ne marche pas apès avoir chargé une partie)
